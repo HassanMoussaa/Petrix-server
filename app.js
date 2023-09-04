@@ -1,14 +1,18 @@
 const express = require("express");
 const db = require("./models/index"); 
 
-// const userRoute = require("./routes/User");
+const doctorRoutes = require("./routes/DoctorRoutes");
+const petOwnerRoutes = require("./routes/PetOwnerRoutes");
+const userRoutes = require("./routes/UserRoutes");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use("/user", userRoute);
+app.use("/doctors", doctorRoutes); // Example route path for doctors
+app.use("/petOwners", petOwnerRoutes); // Example route path for pet owners
+app.use("/users", userRoutes); // Example route path for common user routes
 
 
 db.sequelize
