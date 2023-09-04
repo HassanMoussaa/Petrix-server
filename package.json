@@ -10,8 +10,11 @@
   "author": "Hassan Moussa",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
+    "fastest-validator": "^1.17.0",
     "mysql2": "^3.6.0",
+    "node-input-validator": "^4.5.1",
     "sequelize": "^6.32.1"
   },
   "devDependencies": {

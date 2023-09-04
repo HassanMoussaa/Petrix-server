@@ -10,10 +10,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/doctors", doctorRoutes); // Example route path for doctors
-app.use("/petOwners", petOwnerRoutes); // Example route path for pet owners
-app.use("/users", userRoutes); // Example route path for common user routes
-
+app.use("/doctors", doctorRoutes); 
+app.use("/petOwners", petOwnerRoutes); 
+app.use("/users", userRoutes); 
 
 db.sequelize
   .authenticate()
