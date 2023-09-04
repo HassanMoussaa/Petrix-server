@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
     {
       sequelize,
       modelName: 'UserType',
-      tableName: 'userTypes', 
+      tableName: 'user_types', 
       timestamps: false, 
     }
   );
