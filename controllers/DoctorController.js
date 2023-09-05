@@ -1,0 +1,88 @@
+const User = require("../models/user.js");
+const bcryptjs = require('bcryptjs');
+const Validator = require("fastest-validator");
+
+async function register(req, res) {
+  const v = new Validator();
+  const schema = {
+    firstName: { type: 'string', optional: false, min: 2, max: 50 },
+    lastName: { type: 'string', optional: false, min: 2, max: 50 },
+    email: { type: 'email', optional: false, max: 100 },
+    password: { type: 'string', optional: false, min: 6 },
+    city: { type: 'string', optional: true },
+    country: { type: 'string', optional: true },
+    profile: { type: 'string', optional: true },
+    phone: { type: 'string', optional: true },
+    photoUrl: { type: 'string', optional: true },
+    specialties: { type: 'array', optional: true, max: 4 }, // Array of specialties
+    clinicLocations: { type: 'array', optional: true }, // Array of clinic locations
+  };
+  console.log('Request Body:', req.body);
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: 'Validation Failed!',
+      errors: validation_response,
+    });
+  }
+
+  const { firstName, lastName, email, password, city, country, profile, phone, photoUrl, specialties, clinicLocations } = req.body;
+
+  try {
+    const isEmailUsed = await User.findOne({ where: { email: email } });
+    if (isEmailUsed) {
+      return res.status(409).json({
+        conflict: 'Email',
+        message: 'Email already used!',
+      });
+    }
+
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+
+    const userTypeId = 2; // Doctor user type
+
+    // Create the doctor user
+    const doctor = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      city,
+      country,
+      profile,
+      phone,
+      photoUrl,
+      userTypeId,
+    });
+
+    // Associate specialties
+    if (specialties) {
+      await doctor.setSpecialties(specialties); // Assuming specialties is an array
+    }
+
+    // Create clinic locations
+    if (clinicLocations) {
+      await DoctorLocations.bulkCreate(clinicLocations.map(location => ({
+        doc_id: doctor.id,
+        lat: location.lat,
+        log: location.log,
+      })));
+    }
+
+    return res.status(201).json({
+      message: 'Doctor registration successful!',
+      user: doctor,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Something went wrong!',
+      error: error.message,
+    });
+  }
+}
+
+module.exports = {
+  register,
+};

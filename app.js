@@ -13,17 +13,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/doctors", doctorRoutes); 
 app.use("/petOwners", petOwnerRoutes); 
 app.use("/users", userRoutes); 
-
-db.sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connected to the database.");
-    
-    
     app.listen(8000, () => {
       console.log("Listening on Port 8000:");
     });
-  })
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  });
+
+// db.sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log("Connected to the database.");
+    
+    
+//   })
+//   .catch((err) => {
+//     console.error("Unable to connect to the database:", err);
+//   });

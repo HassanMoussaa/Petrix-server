@@ -4,9 +4,13 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 
 module.exports = (sequelize) => {
   class DoctorLocations extends Model {
-    static associate(models) {
-      // Define associations here if needed
-    }
+//     static associate(models) {
+        
+//       DoctorLocation.belongsTo(models.User, {
+//       foreignKey: 'id', 
+//       as: 'doctor',
+// });
+//     }
   }
 
   DoctorLocations.init(

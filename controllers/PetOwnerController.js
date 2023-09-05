@@ -1,5 +1,6 @@
 // const User = require("../models/user");
-const User = require("../models/User.js");
+// const User = require("../models/user.js");
+const {User} = require("../models")
 
 const bcryptjs = require('bcryptjs');
 const  Validator  = require("fastest-validator");

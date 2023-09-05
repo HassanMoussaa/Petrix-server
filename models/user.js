@@ -1,10 +1,21 @@
-const { Sequelize, Model } = require("sequelize");
+const { Sequelize,DataTypes, Model } = require("sequelize");
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {
-      
-    }
+    // static associate(models) {
+      // User.hasMany(models.DoctorLocation, {
+      // foreignKey: 'doc_id', 
+      // as: 'clinicLocations',
+      // });
+
+      // User.belongsToMany(models.Specialty, {
+      // through: 'UserSpecialties', // Sequelize will create this table
+      // as: 'specialties',
+// });
+     
+
+
+    // }
   }
 
   User.init(
