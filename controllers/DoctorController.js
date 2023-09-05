@@ -1,4 +1,4 @@
-const User = require("../models/user.js");
+const { User, Specialties }  = require("../models");
 const bcryptjs = require('bcryptjs');
 const Validator = require("fastest-validator");
 
@@ -14,8 +14,8 @@ async function register(req, res) {
     profile: { type: 'string', optional: true },
     phone: { type: 'string', optional: true },
     photoUrl: { type: 'string', optional: true },
-    specialties: { type: 'array', optional: true, max: 4 }, // Array of specialties
-    clinicLocations: { type: 'array', optional: true }, // Array of clinic locations
+    specialties: { type: 'array', items:"string", optional: true, min: 1 ,max: 4 }, 
+    // clinicLocations: { type: 'array',items:"string", optional: true }, // Array of clinic locations
   };
   console.log('Request Body:', req.body);
   const validation_response = v.validate(req.body, schema);
@@ -27,7 +27,7 @@ async function register(req, res) {
     });
   }
 
-  const { firstName, lastName, email, password, city, country, profile, phone, photoUrl, specialties, clinicLocations } = req.body;
+  const { firstName, lastName, email, password, city, country, profile, phone, photoUrl, specialties } = req.body;
 
   try {
     const isEmailUsed = await User.findOne({ where: { email: email } });
@@ -41,9 +41,9 @@ async function register(req, res) {
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
 
-    const userTypeId = 2; // Doctor user type
+    const userTypeId = 2; 
 
-    // Create the doctor user
+    
     const doctor = await User.create({
       firstName,
       lastName,
@@ -57,19 +57,19 @@ async function register(req, res) {
       userTypeId,
     });
 
-    // Associate specialties
+    
     if (specialties) {
-      await doctor.setSpecialties(specialties); // Assuming specialties is an array
+      await doctor.setSpecialties(specialties); 
     }
 
     // Create clinic locations
-    if (clinicLocations) {
-      await DoctorLocations.bulkCreate(clinicLocations.map(location => ({
-        doc_id: doctor.id,
-        lat: location.lat,
-        log: location.log,
-      })));
-    }
+    // if (clinicLocations) {
+    //   await DoctorLocations.bulkCreate(clinicLocations.map(location => ({
+    //     doc_id: doctor.id,
+    //     lat: location.lat,
+    //     log: location.log,
+    //   })));
+    // }
 
     return res.status(201).json({
       message: 'Doctor registration successful!',

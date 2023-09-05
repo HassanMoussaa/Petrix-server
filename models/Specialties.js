@@ -2,14 +2,14 @@
 
 const { Sequelize, DataTypes, Model } = require("sequelize");
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class Specialties extends Model {
-//     static associate(models) {
-//      Specialty.belongsToMany(models.User, {
-//      through: 'UserSpecialties', // Sequelize will create this table
-//      as: 'doctors',
-// });
-//     }
+    static associate(models) {
+      this.belongsToMany(models.User, {
+        through: "User_Specialties",
+        as: "doctors",
+      });
+    }
   }
 
   Specialties.init(
@@ -18,8 +18,8 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id', 
+          model: "users",
+          key: "id",
         },
       },
       speciality: {

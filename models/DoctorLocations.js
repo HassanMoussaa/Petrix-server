@@ -2,15 +2,15 @@
 
 const { Sequelize, DataTypes, Model } = require("sequelize");
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class DoctorLocations extends Model {
-//     static associate(models) {
+    static associate(models) {
         
-//       DoctorLocation.belongsTo(models.User, {
-//       foreignKey: 'id', 
-//       as: 'doctor',
-// });
-//     }
+      this.belongsTo(models.User, {
+      foreignKey: 'id', 
+      as: 'doctor',
+});
+    }
   }
 
   DoctorLocations.init(
