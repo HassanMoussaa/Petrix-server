@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         through: "User_Specialties",
         as: "specialties",
       });
+
+      this.belongsTo(models.UserType, {
+        foreignKey: "userTypeId",
+        as: "userType",
+      });
     }
   }
 

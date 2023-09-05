@@ -1,9 +1,11 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   class UserType extends Model {
     static associate(models) {
-      
+      this.hasMany(models.User, {
+        as: "users",
+      });
     }
   }
 
@@ -13,9 +15,9 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: 'UserType',
-      tableName: 'user_types', 
-      timestamps: false, 
+      modelName: "UserType",
+      tableName: "user_types",
+      timestamps: false,
     }
   );
 

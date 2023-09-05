@@ -20,15 +20,6 @@ module.exports = {
       profile: Sequelize.STRING,
       phone: Sequelize.STRING,
       photoUrl: Sequelize.STRING,
-      userTypeId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "userTypes",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
     });
