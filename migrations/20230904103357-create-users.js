@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable("users", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -23,11 +23,11 @@ module.exports = {
       userTypeId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'userTypes',
-          key: 'id',
+          model: "userTypes",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
@@ -35,6 +35,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable("users");
   },
 };
