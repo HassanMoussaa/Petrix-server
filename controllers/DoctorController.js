@@ -1,4 +1,4 @@
-const { User, Specialties } = require("../models");
+const { User, Specialties, Post } = require("../models");
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
 
@@ -130,7 +130,23 @@ async function getDoctorProfile(req, res) {
   }
 }
 
-async function getDoctorPosts(req, res) {}
+async function getDoctorPosts(req, res) {
+  const user_id = req.userData.user_id;
+  try {
+    const response = await Post.findAll({
+      attributes: ["title", "body"],
+      where: { docId: user_id },
+    });
+    console.log("hi", response);
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
 
 module.exports = {
   register,
