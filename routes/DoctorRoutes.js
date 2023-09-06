@@ -8,6 +8,7 @@ router.use(checkAuthMiddleware.checkAuthDoctor);
 
 // Specific to doctors
 router.post("/register", DoctorController.register);
-router.get("/profile", DoctorController.getMyProfile);
+router.get("/profile", DoctorController.getDoctorProfile);
+router.get("/posts", DoctorController.getDoctorPosts);
 
 module.exports = router;

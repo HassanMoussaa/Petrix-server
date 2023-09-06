@@ -102,7 +102,7 @@ async function register(req, res) {
   }
 }
 
-async function getMyProfile(req, res) {
+async function getDoctorProfile(req, res) {
   const id = req.userData.user_id;
 
   try {
@@ -130,7 +130,10 @@ async function getMyProfile(req, res) {
   }
 }
 
+async function getDoctorPosts(req, res) {}
+
 module.exports = {
   register,
-  getMyProfile,
+  getDoctorProfile,
+  getDoctorPosts,
 };
