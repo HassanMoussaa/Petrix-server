@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
 
   DoctorLocations.init(
     {
-      lat: {
+      latitude: {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
-      lon: {
+      longitude: {
         type: DataTypes.FLOAT,
         allowNull: false,
       },

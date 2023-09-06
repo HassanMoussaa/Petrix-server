@@ -14,14 +14,6 @@ module.exports = (sequelize, DataTypes) => {
 
   Specialties.init(
     {
-      doc_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "users",
-          key: "id",
-        },
-      },
       speciality: {
         type: DataTypes.STRING,
         allowNull: false,
