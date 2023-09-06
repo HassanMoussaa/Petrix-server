@@ -1,6 +1,13 @@
-const { User, Specialties, Post, UserFollower } = require("../models");
+const {
+  User,
+  Specialties,
+  Post,
+  UserFollower,
+  Appointment,
+} = require("../models");
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
+const appointment = require("../models/appointment");
 
 async function register(req, res) {
   const v = new Validator();
@@ -112,11 +119,15 @@ async function getDoctorProfile(req, res) {
       include: { all: true },
     });
 
-    console.log("yoo");
     const followerCount = await UserFollower.count({
       where: { followingId: user_id },
     });
     response.dataValues.followerCount = followerCount;
+
+    const appointmentCount = await Appointment.count({
+      where: { doctorId: user_id },
+    });
+    response.dataValues.appointmentCount = appointmentCount;
 
     res.send(response);
   } catch (error) {
