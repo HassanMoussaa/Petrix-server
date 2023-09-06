@@ -13,7 +13,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/doctors", doctorRoutes);
 app.use("/petOwners", petOwnerRoutes);
-
 app.use("/users", userRoutes);
 app.listen(8000, () => {
   console.log("Listening on Port 8000:");

@@ -4,7 +4,7 @@ const Validator = require("fastest-validator");
 const bcryptjs = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 
-const { User } = require("../models");
+const { User, UserFollower } = require("../models");
 
 async function login(req, res) {
   const v = new Validator();
@@ -74,6 +74,31 @@ async function login(req, res) {
     });
   }
 }
+
+async function followUser(req, res) {
+  const user_id = req.userData.user_id;
+
+  const { followed_user_id } = req.body;
+
+  try {
+    const response = await UserFollower.create({
+      followerId: user_id,
+      followingId: followed_user_id,
+    });
+
+    res.send({
+      response: response,
+      message: "User Followed Successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   login,
+  followUser,
 };
