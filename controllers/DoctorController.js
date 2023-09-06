@@ -102,6 +102,26 @@ async function register(req, res) {
   }
 }
 
+async function getMyProfile(req, res) {
+  const id = req.userData.user_id;
+
+  try {
+    const response = await User.findOne({
+      attributes: ["id", "firstName", "lastName"],
+      where: { id: id },
+      include: { all: true },
+    });
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   register,
+  getMyProfile,
 };

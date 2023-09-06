@@ -5,24 +5,15 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class DoctorLocations extends Model {
     static associate(models) {
-        
       this.belongsTo(models.User, {
-      foreignKey: 'id', 
-      as: 'doctor',
-});
+        foreignKey: "id",
+        as: "doctor",
+      });
     }
   }
 
   DoctorLocations.init(
     {
-      doc_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users', 
-          key: 'id', 
-        },
-      },
       lat: {
         type: DataTypes.FLOAT,
         allowNull: false,
