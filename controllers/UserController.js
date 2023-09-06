@@ -98,7 +98,33 @@ async function followUser(req, res) {
   }
 }
 
+async function unfollowUser(req, res) {
+  const user_id = req.userData.user_id;
+
+  const { unfollowed_user_id } = req.body;
+
+  try {
+    const response = await UserFollower.destroy({
+      where: {
+        followerId: user_id,
+        followingId: unfollowed_user_id,
+      },
+    });
+
+    res.send({
+      response: response,
+      message: "User unfollowed Successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
+  unfollowUser,
 };

@@ -9,5 +9,6 @@ router.use(checkAuthMiddleware.checkAuth);
 // Common routes
 router.post("/login", UserController.login);
 router.post("/follow", UserController.followUser);
+router.post("/unfollow", UserController.unfollowUser);
 
 module.exports = router;
