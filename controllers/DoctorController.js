@@ -1,4 +1,4 @@
-const { User, Specialties, Post } = require("../models");
+const { User, Specialties, Post, UserFollower } = require("../models");
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
 
@@ -94,7 +94,7 @@ async function register(req, res) {
 }
 
 async function getDoctorProfile(req, res) {
-  const id = req.userData.user_id;
+  const user_id = req.userData.user_id;
 
   try {
     const response = await User.findOne({
@@ -108,9 +108,15 @@ async function getDoctorProfile(req, res) {
         "phone",
         "photoUrl",
       ],
-      where: { id: id },
+      where: { id: user_id },
       include: { all: true },
     });
+
+    console.log("yoo");
+    const followerCount = await UserFollower.count({
+      where: { followingId: user_id },
+    });
+    response.dataValues.followerCount = followerCount;
 
     res.send(response);
   } catch (error) {
