@@ -1,10 +1,15 @@
 // In PetOwnerRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const PetOwnerController = require('../controllers/PetOwnerController');
+const PetOwnerController = require("../controllers/PetOwnerController");
+const checkAuthMiddleware = require("../middleware/check-auth");
+
+router.post("/register", PetOwnerController.register);
+
+router.use(checkAuthMiddleware.checkAuthPetOwner);
 
 // Specific to pet owners
-router.post('/register', PetOwnerController.register);
-// router.put('/profile/:id', PetOwnerController.updateProfile);
+
+router.get("/profile", PetOwnerController.getPetOwnerProfile);
 
 module.exports = router;

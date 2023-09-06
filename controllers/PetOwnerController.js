@@ -1,6 +1,6 @@
 // const User = require("../models/user");
 // const User = require("../models/user.js");
-const { User } = require("../models");
+const { User, Pet } = require("../models");
 
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
@@ -79,6 +79,36 @@ async function register(req, res) {
   }
 }
 
+async function getPetOwnerProfile(req, res) {
+  const user_id = req.userData.user_id;
+
+  try {
+    const response = await User.findOne({
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "city",
+        "country",
+        "profile",
+        "phone",
+        "photoUrl",
+      ],
+      where: { id: user_id },
+      // at the moment its only one argument we are searching for :"" , other: []
+      include: "pets",
+    });
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   register,
+  getPetOwnerProfile,
 };
