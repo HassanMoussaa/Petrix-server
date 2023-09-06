@@ -107,7 +107,16 @@ async function getMyProfile(req, res) {
 
   try {
     const response = await User.findOne({
-      attributes: ["id", "firstName", "lastName"],
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "city",
+        "country",
+        "profile",
+        "phone",
+        "photoUrl",
+      ],
       where: { id: id },
       include: { all: true },
     });
