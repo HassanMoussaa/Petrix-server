@@ -81,15 +81,6 @@ async function register(req, res) {
       await doctor.setSpecialties(specialties);
     }
 
-    // Create clinic locations
-    // if (clinicLocations) {
-    //   await DoctorLocations.bulkCreate(clinicLocations.map(location => ({
-    //     doc_id: doctor.id,
-    //     lat: location.lat,
-    //     log: location.log,
-    //   })));
-    // }
-
     return res.status(201).json({
       message: "Doctor registration successful!",
       user: doctor,
@@ -148,8 +139,46 @@ async function getDoctorPosts(req, res) {
   }
 }
 
+async function createDoctorPost(req, res) {
+  const doc_id = req.userData.user_id;
+  const v = new Validator();
+  const schema = {
+    title: { type: "string", optional: false, min: 2 },
+    body: { type: "string", optional: false, min: 5 },
+  };
+  console.log("Request Body:", req.body);
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: "Validation Failed!",
+      errors: validation_response,
+    });
+  }
+  const { title, body } = req.body;
+
+  try {
+    const post = await Post.create({
+      title,
+      body,
+      docId: doc_id,
+    });
+
+    return res.status(201).json({
+      message: "Post creation successful!",
+      post: post,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   register,
   getDoctorProfile,
   getDoctorPosts,
+  createDoctorPost,
 };

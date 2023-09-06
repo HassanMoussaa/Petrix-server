@@ -10,5 +10,6 @@ router.use(checkAuthMiddleware.checkAuthDoctor);
 router.post("/register", DoctorController.register);
 router.get("/profile", DoctorController.getDoctorProfile);
 router.get("/posts", DoctorController.getDoctorPosts);
+router.post("/post", DoctorController.createDoctorPost);
 
 module.exports = router;
