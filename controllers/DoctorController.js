@@ -192,10 +192,50 @@ async function createDoctorPost(req, res) {
     });
   }
 }
+async function editDoctorPost(req, res) {
+  const doc_id = req.userData.user_id;
+  const v = new Validator();
+  const schema = {
+    title: { type: "string", optional: false, min: 2 },
+    body: { type: "string", optional: false, min: 5 },
+  };
+  console.log("Request Body:", req.body);
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: "Validation Failed!",
+      errors: validation_response,
+    });
+  }
+  const { title, body } = req.body;
+  const { id } = req.params;
+  try {
+    const updated_posts = await Post.update(
+      { body, title },
+      { where: { id, docId: doc_id } }
+    );
+    if (updated_posts[0] === 0) {
+      return res.status(404).json({
+        message: "post not found!",
+      });
+    }
+
+    return res.status(201).json({
+      message: "Post updated successful!",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   register,
   getMyProfile,
   getDoctorPosts,
   createDoctorPost,
+  editDoctorPost,
 };

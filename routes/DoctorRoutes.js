@@ -13,5 +13,6 @@ router.use(checkAuthMiddleware.checkAuthDoctor);
 router.get("/myProfile", DoctorController.getMyProfile);
 router.get("/posts", DoctorController.getDoctorPosts);
 router.post("/post", DoctorController.createDoctorPost);
+router.put("/post/:id", DoctorController.editDoctorPost);
 
 module.exports = router;
