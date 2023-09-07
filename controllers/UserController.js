@@ -271,6 +271,29 @@ async function createComment(req, res) {
   }
 }
 
+async function deleteComment(req, res) {
+  const user_id = req.userData.user_id;
+  const { id } = req.params;
+  try {
+    const response = await Comment.destroy({
+      where: {
+        id: id,
+        userId: user_id,
+      },
+    });
+
+    res.send({
+      response: response,
+      message: "Comment deleted Successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
@@ -280,4 +303,5 @@ module.exports = {
   likePost,
   unlikePost,
   createComment,
+  deleteComment,
 };
