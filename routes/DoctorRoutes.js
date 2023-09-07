@@ -10,7 +10,7 @@ router.use(checkAuthMiddleware.checkAuthDoctor);
 
 // Specific to doctors
 
-router.get("/profile", DoctorController.getDoctorProfile);
+router.get("/myProfile/:id", DoctorController.getDoctorProfile);
 router.get("/posts", DoctorController.getDoctorPosts);
 router.post("/post", DoctorController.createDoctorPost);
 

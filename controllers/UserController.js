@@ -123,8 +123,78 @@ async function unfollowUser(req, res) {
   }
 }
 
+async function getDoctorProfile(req, res) {
+  const { user_id: doc_id } = req.params;
+  // const user_id = req.userData.user_id;
+
+  try {
+    const response = await User.findOne({
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "city",
+        "country",
+        "profile",
+        "phone",
+        "photoUrl",
+      ],
+      where: { id: doc_id },
+      include: { all: true },
+    });
+
+    const followerCount = await UserFollower.count({
+      where: { followingId: doc_id },
+    });
+    response.dataValues.followerCount = followerCount;
+
+    const appointmentCount = await Appointment.count({
+      where: { doctorId: doc_id },
+    });
+    response.dataValues.appointmentCount = appointmentCount;
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
+async function getPetOwnerProfile(req, res) {
+  const user_id = req.userData.user_id;
+
+  try {
+    const response = await User.findOne({
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "city",
+        "country",
+        "profile",
+        "phone",
+        "photoUrl",
+      ],
+      where: { id: user_id },
+      // at the moment its only one argument we are searching for :"" , other: []
+      include: "pets",
+    });
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
   unfollowUser,
+  getDoctorProfile,
+  getPetOwnerProfile,
 };

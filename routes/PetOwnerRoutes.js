@@ -10,6 +10,6 @@ router.use(checkAuthMiddleware.checkAuthPetOwner);
 
 // Specific to pet owners
 
-router.get("/profile", PetOwnerController.getPetOwnerProfile);
+router.get("/myProfile", PetOwnerController.getmyProfile);
 
 module.exports = router;

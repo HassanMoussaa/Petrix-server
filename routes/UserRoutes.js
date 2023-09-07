@@ -11,5 +11,7 @@ router.use(checkAuthMiddleware.checkAuth);
 // Common routes
 router.post("/follow", UserController.followUser);
 router.post("/unfollow", UserController.unfollowUser);
+router.get("/doctorProfile/:id", UserController.getDoctorProfile);
+router.get("/petOwnerProfile/:id", UserController.getPetOwnerProfile);
 
 module.exports = router;

@@ -79,7 +79,7 @@ async function register(req, res) {
   }
 }
 
-async function getPetOwnerProfile(req, res) {
+async function getmyProfile(req, res) {
   const user_id = req.userData.user_id;
 
   try {
@@ -110,5 +110,5 @@ async function getPetOwnerProfile(req, res) {
 
 module.exports = {
   register,
-  getPetOwnerProfile,
+  getmyProfile,
 };
