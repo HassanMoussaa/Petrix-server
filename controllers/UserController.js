@@ -4,7 +4,7 @@ const Validator = require("fastest-validator");
 const bcryptjs = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 
-const { User, UserFollower } = require("../models");
+const { User, UserFollower, Like } = require("../models");
 
 async function login(req, res) {
   const v = new Validator();
@@ -191,10 +191,55 @@ async function getPetOwnerProfile(req, res) {
   }
 }
 
+async function likePost(req, res) {
+  const user_id = req.userData.user_id;
+  const { post_id } = req.body;
+  try {
+    const response = await Like.create({
+      userId: user_id,
+      postId: post_id,
+    });
+
+    res.send({
+      response: response,
+      message: "User liked Successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+async function unlikePost(req, res) {
+  const user_id = req.userData.user_id;
+  const { post_id } = req.body;
+  try {
+    const response = await Like.destroy({
+      where: {
+        userId: user_id,
+        postId: post_id,
+      },
+    });
+
+    res.send({
+      response: response,
+      message: "User unliked Successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
   unfollowUser,
   getDoctorProfile,
   getPetOwnerProfile,
+  likePost,
+  unlikePost,
 };
