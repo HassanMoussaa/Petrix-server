@@ -329,6 +329,43 @@ async function editComment(req, res) {
   }
 }
 
+async function searchUsers(req, res) {
+  const user_id = req.userData.user_id;
+  const { keyword } = req.params;
+
+  try {
+    const response = await User.findAll({
+      attributes: ["id", "firstName", "lastName", "photoUrl"],
+      where: {
+        [Op.or]: [
+          { firstName: { [Op.like]: "%" + keyword + "%" } },
+          { lastName: { [Op.like]: "%" + keyword + "%" } },
+        ],
+        id: { [Op.not]: user_id },
+      },
+      include: ["follower"],
+    });
+    console.log(response);
+
+    response.forEach((user) => {
+      user.dataValues.is_followed = false;
+      for (const follower of user.dataValues.follower) {
+        if (follower.followerId === user_id) {
+          user.dataValues.is_followed = true;
+          break;
+        }
+      }
+    });
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
@@ -340,4 +377,5 @@ module.exports = {
   createComment,
   deleteComment,
   editComment,
+  searchUsers,
 };

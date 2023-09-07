@@ -22,4 +22,6 @@ router.delete("/comment/:id", UserController.deleteComment);
 
 router.put("/comment/:id", UserController.editComment);
 
+router.get("/search/:keyword", UserController.searchUsers);
+
 module.exports = router;
