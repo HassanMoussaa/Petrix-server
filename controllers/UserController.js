@@ -282,14 +282,49 @@ async function deleteComment(req, res) {
       },
     });
 
-    res.send({
-      response: response,
-      message: "Comment deleted Successfully!",
-    });
+    res.status(204).json();
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong!",
       error: error,
+    });
+  }
+}
+
+async function editComment(req, res) {
+  const user_id = req.userData.user_id;
+  const v = new Validator();
+  const schema = {
+    body: { type: "string", optional: false, min: 2 },
+  };
+
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: "Validation Failed!",
+      errors: validation_response,
+    });
+  }
+  const { body } = req.body;
+  const { id } = req.params;
+
+  try {
+    const updated_comments = await Comment.update({ body }, { where: { id } });
+    if (updated_comments[0] === 0) {
+      return res.status(404).json({
+        message: "Comment not found!",
+      });
+    }
+
+    return res.status(204).json({
+      message: "Comment update successful!",
+      // comment: comment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
     });
   }
 }
@@ -304,4 +339,5 @@ module.exports = {
   unlikePost,
   createComment,
   deleteComment,
+  editComment,
 };

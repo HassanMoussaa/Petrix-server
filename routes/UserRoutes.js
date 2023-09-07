@@ -16,8 +16,10 @@ router.get("/petOwnerProfile/:id", UserController.getPetOwnerProfile);
 
 router.post("/like", UserController.likePost);
 router.post("/unlike", UserController.unlikePost);
-router.post("/addComment", UserController.createComment);
+router.post("/comment", UserController.createComment);
 
 router.delete("/comment/:id", UserController.deleteComment);
+
+router.put("/comment/:id", UserController.editComment);
 
 module.exports = router;
