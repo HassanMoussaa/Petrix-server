@@ -4,7 +4,7 @@ const Validator = require("fastest-validator");
 const bcryptjs = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 
-const { User, UserFollower, Like } = require("../models");
+const { User, UserFollower, Like, Comment } = require("../models");
 
 async function login(req, res) {
   const v = new Validator();
@@ -211,6 +211,7 @@ async function likePost(req, res) {
     });
   }
 }
+
 async function unlikePost(req, res) {
   const user_id = req.userData.user_id;
   const { post_id } = req.body;
@@ -234,6 +235,42 @@ async function unlikePost(req, res) {
   }
 }
 
+async function createComment(req, res) {
+  const user_id = req.userData.user_id;
+  const v = new Validator();
+  const schema = {
+    body: { type: "string", optional: false, min: 2 },
+  };
+
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: "Validation Failed!",
+      errors: validation_response,
+    });
+  }
+  const { body, postId } = req.body;
+
+  try {
+    const comment = await Comment.create({
+      body,
+      postId,
+      userId: user_id,
+    });
+
+    return res.status(201).json({
+      message: "Comment creation successful!",
+      comment: comment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
@@ -242,4 +279,5 @@ module.exports = {
   getPetOwnerProfile,
   likePost,
   unlikePost,
+  createComment,
 };
