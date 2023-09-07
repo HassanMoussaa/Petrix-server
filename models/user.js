@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "id",
         as: "petOwnerAppointments",
       });
+
+      this.hasMany(models.Like, {
+        foreignKey: "id",
+        as: "userLikes",
+      });
     }
   }
 
