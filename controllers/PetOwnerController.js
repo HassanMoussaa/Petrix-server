@@ -106,7 +106,7 @@ async function getmyProfile(req, res) {
     });
   }
 }
-// remmeber to handel errors
+
 async function bookAppointment(req, res) {
   const user_id = req.userData.user_id;
   const { doctorId, petOwnerId, date } = req.body;

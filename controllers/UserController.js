@@ -335,7 +335,7 @@ async function searchUsers(req, res) {
   const { specialtyId } = req.body;
 
   try {
-    const response = await User.findAll({
+    let response = await User.findAll({
       attributes: ["id", "firstName", "lastName", "photoUrl"],
       where: {
         [Op.or]: [
@@ -346,7 +346,6 @@ async function searchUsers(req, res) {
       },
       include: ["follower", "specialties"],
     });
-    console.log(response);
 
     response.forEach((user) => {
       user.dataValues.is_followed = false;
@@ -359,14 +358,13 @@ async function searchUsers(req, res) {
     });
 
     if (specialtyId) {
-      response.forEach((user) => {
+      response = response.filter((user) => {
         for (const specialty of user.dataValues.specialties) {
           if (specialty.id === specialtyId) {
-            user.dataValues.is_followed = true;
-            break;
+            return true;
           }
-          // pop the user here
         }
+        return false;
       });
     }
 
