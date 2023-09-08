@@ -24,4 +24,6 @@ router.put("/comment/:id", UserController.editComment);
 
 router.get("/search/:keyword", UserController.searchUsers);
 
+router.get("/topDoctors", UserController.getTopDoctors);
+
 module.exports = router;

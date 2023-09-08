@@ -4,7 +4,7 @@ const Validator = require("fastest-validator");
 const bcryptjs = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 
-const { User, UserFollower, Like, Comment } = require("../models");
+const { User, UserFollower, Like, Comment, Appointment } = require("../models");
 
 async function login(req, res) {
   const v = new Validator();
@@ -332,6 +332,7 @@ async function editComment(req, res) {
 async function searchUsers(req, res) {
   const user_id = req.userData.user_id;
   const { keyword } = req.params;
+  const { specialtyId } = req.body;
 
   try {
     const response = await User.findAll({
@@ -343,7 +344,7 @@ async function searchUsers(req, res) {
         ],
         id: { [Op.not]: user_id },
       },
-      include: ["follower"],
+      include: ["follower", "specialties"],
     });
     console.log(response);
 
@@ -357,6 +358,18 @@ async function searchUsers(req, res) {
       }
     });
 
+    if (specialtyId) {
+      response.forEach((user) => {
+        for (const specialty of user.dataValues.specialties) {
+          if (specialty.id === specialtyId) {
+            user.dataValues.is_followed = true;
+            break;
+          }
+          // pop the user here
+        }
+      });
+    }
+
     res.send(response);
   } catch (error) {
     res.status(500).json({
@@ -365,6 +378,70 @@ async function searchUsers(req, res) {
     });
   }
 }
+
+async function getTopDoctors(req, res) {
+  try {
+    const doctors = await User.findAll({
+      where: { userTypeId: 2 },
+      attributes: ["id", "firstName", "lastName", "photoUrl"],
+    });
+
+    const doctorsWithCounts = await Promise.all(
+      doctors.map(async (doctor) => {
+        const appointmentCount = await Appointment.count({
+          where: { doctorId: doctor.id },
+        });
+        doctor.dataValues.appointmentCount = appointmentCount;
+        return doctor;
+      })
+    );
+
+    const sortedDoctors = doctorsWithCounts.sort(
+      (a, b) => b.dataValues.appointmentCount - a.dataValues.appointmentCount
+    );
+
+    const topDoctors = sortedDoctors.slice(0, 4);
+
+    res.send(topDoctors);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
+// async function getTopDoctors(req, res) {
+//   try {
+//     // Find the top 4 doctors with the highest number of appointments
+//     const topDoctors = await User.findAll({
+//       attributes: ["id", "firstName", "lastName", "photoUrl"],
+//       include: [
+//         {
+//           model: Appointment,
+//           as: "doctorAppointments",
+//           attributes: [], // You can specify the attributes you want to include here if needed
+//         },
+//       ],
+//       group: ["User.id"],
+//       order: [[Sequelize.literal("COUNT(doctorAppointments.id)"), "DESC"]],
+//       limit: 4,
+//     });
+
+//     // Add the appointment count to each doctor
+//     for (const doctor of topDoctors) {
+//       doctor.dataValues.appointmentCount = doctor.doctorAppointments.length;
+//     }
+
+//     res.send(topDoctors);
+//   } catch (error) {
+//     res.status(500).json({
+//       message: "Something went wrong!",
+//       error: error,
+//     });
+//   }
+// }
 
 module.exports = {
   login,
@@ -378,4 +455,5 @@ module.exports = {
   deleteComment,
   editComment,
   searchUsers,
+  getTopDoctors,
 };
