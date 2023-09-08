@@ -1,6 +1,6 @@
 // const User = require("../models/user");
 // const User = require("../models/user.js");
-const { User, Pet } = require("../models");
+const { User, Pet, Appointment } = require("../models");
 
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
@@ -95,7 +95,6 @@ async function getmyProfile(req, res) {
         "photoUrl",
       ],
       where: { id: user_id },
-      // at the moment its only one argument we are searching for :"" , other: []
       include: "pets",
     });
 
@@ -107,8 +106,45 @@ async function getmyProfile(req, res) {
     });
   }
 }
+// remmeber to handel errors
+async function bookAppointment(req, res) {
+  const user_id = req.userData.user_id;
+  const { doctorId, petOwnerId, date } = req.body;
+
+  try {
+    const isAlreadyBooked = await Appointment.findAll({
+      where: {
+        date,
+        doctorId,
+      },
+    });
+
+    if (isAlreadyBooked) {
+      return res.status(400).json({
+        message: "Appointment already booked!",
+      });
+    }
+
+    const newAppointment = await Appointment.create({
+      date,
+      petId: petOwnerId,
+      doctorId,
+      petOwnerId: user_id,
+    });
+    return res.status(201).json({
+      message: "Appointment created successfully!",
+      Appointment: newAppointment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   register,
   getmyProfile,
+  bookAppointment,
 };
