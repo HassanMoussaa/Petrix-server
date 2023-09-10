@@ -15,4 +15,9 @@ router.get("/posts", DoctorController.getDoctorPosts);
 router.post("/post", DoctorController.createDoctorPost);
 router.put("/post/:id", DoctorController.editDoctorPost);
 
+router.get("/appointments", DoctorController.getPendingAppointments);
+router.put("/acceptAppointment", DoctorController.acceptAppointment);
+router.put("/rejectAppointment", DoctorController.rejectAppointment);
+router.get("/acceptedAppointments", DoctorController.getAcceptedAppointments);
+
 module.exports = router;
