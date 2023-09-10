@@ -145,7 +145,6 @@ async function getDoctorPosts(req, res) {
       attributes: ["title", "body"],
       where: { docId: user_id },
     });
-    console.log("hi", response);
 
     res.send(response);
   } catch (error) {
@@ -232,10 +231,99 @@ async function editDoctorPost(req, res) {
   }
 }
 
+async function getPendingAppointments(req, res) {
+  const user_id = req.userData.user_id;
+  try {
+    const response = await Appointment.findAll({
+      attributes: ["date"],
+      where: { docId: user_id, status: "pending" },
+    });
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
+async function acceptAppointment(req, res) {
+  // const user_id = req.userData.user_id;
+  const appointmentId = req.body;
+
+  try {
+    const response = await Post.update(
+      { status: "accepted" },
+      { where: { id: appointmentId } }
+    );
+    if (response[0] === 0) {
+      return res.status(404).json({
+        message: "post not found!",
+      });
+    }
+
+    return res.status(201).json({
+      message: "Appointment accepted successfully!",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+async function rejectAppointment(req, res) {
+  // const user_id = req.userData.user_id;
+  const appointmentId = req.body;
+
+  try {
+    const response = await Post.update(
+      { status: "rejected" },
+      { where: { id: appointmentId } }
+    );
+    if (response[0] === 0) {
+      return res.status(404).json({
+        message: "Appointment not found!",
+      });
+    }
+
+    return res.status(201).json({
+      message: "Appointment rejected successfully!",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
+async function getAcceptedAppointments(req, res) {
+  const user_id = req.userData.user_id;
+  try {
+    const response = await Appointment.findOne({
+      attributes: ["date", "petOwnerId"],
+      where: { docId: user_id, status: "accepted" },
+    });
+    //get info of petOwner
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   register,
   getMyProfile,
   getDoctorPosts,
   createDoctorPost,
   editDoctorPost,
+  getPendingAppointments,
+  acceptAppointment,
+  rejectAppointment,
+  getAcceptedAppointments,
 };
