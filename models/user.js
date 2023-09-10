@@ -7,9 +7,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "docId",
         as: "clinicLocations",
       });
+
       this.belongsToMany(models.Specialties, {
         through: "User_Specialties",
         as: "specialties",
+      });
+
+      this.hasMany(models.Availability, {
+        foreignKey: "id",
+        as: "availabilities",
       });
 
       this.belongsTo(models.UserType, {
