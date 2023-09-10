@@ -1,5 +1,5 @@
-"use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Appointment extends Model {
     static associate(models) {
@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
   Appointment.init(
     {
       date: DataTypes.DATE,
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "pending",
+      },
     },
     {
       sequelize,
