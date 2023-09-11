@@ -4,14 +4,14 @@ module.exports = (sequelize, DataTypes) => {
   class Availability extends Model {
     static associate(models) {
       this.belongsTo(models.User, {
-        foreignKey: "id",
+        foreignKey: "UserId",
         as: "doctor",
       });
     }
   }
   Availability.init(
     {
-      day: Sequelize.STRING,
+      day: Sequelize.INTEGER,
       start_time: Sequelize.TIME,
       end_time: Sequelize.TIME,
     },
