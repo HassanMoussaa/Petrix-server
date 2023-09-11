@@ -2,6 +2,7 @@ const {
   User,
   Specialties,
   Post,
+  Availability,
   UserFollower,
   Appointment,
 } = require("../models");
@@ -316,6 +317,38 @@ async function getAcceptedAppointments(req, res) {
   }
 }
 
+async function setAvailability(req, res) {
+  const doc_id = req.userData.user_id;
+  const { days, start_time, end_time } = req.body;
+
+  try {
+    const availabilityPromises = days.map(async (day) => {
+      // You can create a new Availability row for each day here
+      const availability = await Availability.create({
+        UserId: doc_id,
+        day: day, // Assuming each day is an integer representing the day of the week
+        start_time: start_time,
+        end_time: end_time,
+      });
+
+      return availability;
+    });
+
+    // Wait for all the availability rows to be created
+    const availabilities = await Promise.all(availabilityPromises);
+
+    return res.status(200).json({
+      message: "Availability has been set for multiple days",
+      availabilities: availabilities,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   register,
   getMyProfile,
@@ -326,4 +359,5 @@ module.exports = {
   acceptAppointment,
   rejectAppointment,
   getAcceptedAppointments,
+  setAvailability,
 };
