@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Appointment extends Model {
     static associate(models) {
       this.belongsTo(models.User, {
-        foreignKey: "docId",
+        foreignKey: "doctorId",
         as: "doctor",
       });
       this.belongsTo(models.User, {
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Appointment.init(
     {
-      date: DataTypes.DATE,
+      date: DataTypes.DATEONLY,
       status: {
         type: DataTypes.STRING,
         allowNull: false,
