@@ -1,6 +1,7 @@
 // const User = require("../models/user");
 // const User = require("../models/user.js");
-const { User, Pet, Appointment } = require("../models");
+const { User, Pet, Appointment, Availability } = require("../models");
+const moment = require("moment");
 
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
@@ -143,8 +144,81 @@ async function bookAppointment(req, res) {
   }
 }
 
+function generateAvailableSlots(start_time, end_time) {
+  const timeFormat = "HH:mm:ss";
+
+  const startTime = moment(start_time, timeFormat);
+  const endTime = moment(end_time, timeFormat);
+
+  const availableSlots = [];
+
+  const durationMinutes = 60; // 1 hour
+
+  let currentTime = startTime.clone();
+  while (currentTime.isBefore(endTime)) {
+    const slot = {
+      start: currentTime.format(timeFormat),
+      end: currentTime.add(durationMinutes, "minutes").format(timeFormat),
+    };
+    availableSlots.push(slot);
+  }
+  return availableSlots;
+}
+
+async function filterAvailableSlots(availableSlots, date_obj, docId) {
+  const filteredSlots = await Promise.all(
+    availableSlots.map(async (slot) => {
+      const appointment = await Appointment.findOne({
+        where: {
+          date: date_obj,
+          doctorId: docId,
+          status: "accepted",
+          start_time: slot.start,
+        },
+      });
+
+      if (!appointment) {
+        return slot;
+      }
+    })
+  );
+
+  return filteredSlots.filter(Boolean);
+}
+
+async function getAvailableSlots(req, res) {
+  const { docId, date } = req.body;
+  const date_obj = new Date(date);
+
+  try {
+    const availibility = await Availability.findOne({
+      attributes: ["start_time", "end_time"],
+      where: { userId: docId, day: date_obj.getDay() },
+    });
+
+    const availableSlots = generateAvailableSlots(
+      availibility.start_time,
+      availibility.end_time
+    );
+
+    const filteredAvailableSlots = await filterAvailableSlots(
+      availableSlots,
+      date_obj,
+      docId
+    );
+
+    res.status(200).json({ availableSlots: filteredAvailableSlots });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   register,
   getmyProfile,
   bookAppointment,
+  getAvailableSlots,
 };
