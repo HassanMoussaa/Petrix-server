@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       day: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       start_time: {
         type: Sequelize.TIME,
