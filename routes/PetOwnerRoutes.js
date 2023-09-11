@@ -13,4 +13,6 @@ router.use(checkAuthMiddleware.checkAuthPetOwner);
 router.get("/myProfile", PetOwnerController.getmyProfile);
 router.get("/appointment", PetOwnerController.bookAppointment);
 
+router.get("/availableSlots", PetOwnerController.getAvailableSlots);
+
 module.exports = router;
