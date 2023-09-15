@@ -5,6 +5,7 @@ const UserController = require("../controllers/UserController");
 const checkAuthMiddleware = require("../middleware/check-auth");
 
 router.post("/login", UserController.login);
+router.get("/topDoctors", UserController.getTopDoctors);
 
 router.use(checkAuthMiddleware.checkAuth);
 
@@ -23,7 +24,5 @@ router.delete("/comment/:id", UserController.deleteComment);
 router.put("/comment/:id", UserController.editComment);
 
 router.get("/search/:keyword", UserController.searchUsers);
-
-router.get("/topDoctors", UserController.getTopDoctors);
 
 module.exports = router;
