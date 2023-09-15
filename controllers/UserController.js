@@ -36,7 +36,7 @@ async function login(req, res) {
       // comparing the inputted password with the password stored in the Database
       bcryptjs.compare(password, user.password, (err, result) => {
         if (result) {
-          const is_pet_owner = user.userTypeId == 1;
+          const userType = user.userTypeId;
 
           // signing the JWT Token
           const token = JWT.sign(
@@ -49,7 +49,7 @@ async function login(req, res) {
               return res.json({
                 message: "Authentication Successful!",
                 token: token,
-                isPetOwner: is_pet_owner,
+                user_type: userType,
                 user: {
                   user_id: user.id,
                   firstName: user.firstName,
@@ -398,7 +398,7 @@ async function getTopDoctors(req, res) {
       (a, b) => b.dataValues.appointmentCount - a.dataValues.appointmentCount
     );
 
-    const topDoctors = sortedDoctors.slice(0, 4);
+    const topDoctors = sortedDoctors.slice(0, 10);
 
     res.send(topDoctors);
   } catch (error) {
