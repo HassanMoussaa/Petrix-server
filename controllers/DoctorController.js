@@ -5,6 +5,7 @@ const {
   Availability,
   UserFollower,
   Appointment,
+  UserType,
 } = require("../models");
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
@@ -117,7 +118,23 @@ async function getMyProfile(req, res) {
         "photoUrl",
       ],
       where: { id: user_id },
-      include: { all: true },
+      include: [
+        {
+          model: Specialties,
+          as: "specialties",
+          attributes: ["id", "speciality"],
+        },
+        {
+          model: UserType,
+          as: "userType",
+          attributes: ["id", "type"],
+        },
+        {
+          model: Post,
+          as: "posts",
+          attributes: ["id", "title", "body", "createdAt"],
+        },
+      ],
     });
 
     const followerCount = await UserFollower.count({
@@ -134,7 +151,7 @@ async function getMyProfile(req, res) {
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong!",
-      error: error,
+      error: error.message,
     });
   }
 }
