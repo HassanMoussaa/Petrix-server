@@ -116,6 +116,7 @@ async function getMyProfile(req, res) {
         "profile",
         "phone",
         "photoUrl",
+        "email",
       ],
       where: { id: user_id },
       include: [
