@@ -255,7 +255,7 @@ async function getPendingAppointments(req, res) {
   try {
     const response = await Appointment.findAll({
       attributes: ["date"],
-      where: { docId: user_id, status: "pending" },
+      where: { doctorId: user_id, status: "pending" },
     });
 
     res.send(response);
@@ -323,7 +323,7 @@ async function getAcceptedAppointments(req, res) {
   try {
     const response = await Appointment.findOne({
       attributes: ["date", "petOwnerId"],
-      where: { docId: user_id, status: "accepted" },
+      where: { doctorId: user_id, status: "accepted" },
     });
     //get info of petOwner
     res.send(response);
