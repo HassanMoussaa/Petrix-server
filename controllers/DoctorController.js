@@ -254,7 +254,7 @@ async function getPendingAppointments(req, res) {
   const user_id = req.userData.user_id;
   try {
     const response = await Appointment.findAll({
-      attributes: ["date", "id", "petOwnerId"],
+      attributes: ["date", "id", "petOwnerId", "start_time"],
       where: { doctorId: user_id, status: "pending" },
       include: {
         model: User,
@@ -276,7 +276,7 @@ async function getrejectedAppointments(req, res) {
   const user_id = req.userData.user_id;
   try {
     const response = await Appointment.findAll({
-      attributes: ["date", "id", "petOwnerId"],
+      attributes: ["date", "id", "petOwnerId", "start_time"],
       where: { doctorId: user_id, status: "rejected" },
       include: {
         model: User,
@@ -349,7 +349,7 @@ async function getAcceptedAppointments(req, res) {
   const user_id = req.userData.user_id;
   try {
     const response = await Appointment.findAll({
-      attributes: ["date", "id", "petOwnerId"],
+      attributes: ["date", "id", "petOwnerId", "start_time"],
       where: { doctorId: user_id, status: "accepted" },
       include: {
         model: User,
