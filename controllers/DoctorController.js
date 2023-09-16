@@ -254,8 +254,35 @@ async function getPendingAppointments(req, res) {
   const user_id = req.userData.user_id;
   try {
     const response = await Appointment.findAll({
-      attributes: ["date"],
+      attributes: ["date", "id", "petOwnerId"],
       where: { doctorId: user_id, status: "pending" },
+      include: {
+        model: User,
+        as: "petOwner",
+        attributes: ["firstName", "lastName"],
+      },
+    });
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
+async function getrejectedAppointments(req, res) {
+  const user_id = req.userData.user_id;
+  try {
+    const response = await Appointment.findAll({
+      attributes: ["date", "id", "petOwnerId"],
+      where: { doctorId: user_id, status: "rejected" },
+      include: {
+        model: User,
+        as: "petOwner",
+        attributes: ["firstName", "lastName"],
+      },
     });
 
     res.send(response);
@@ -321,9 +348,14 @@ async function rejectAppointment(req, res) {
 async function getAcceptedAppointments(req, res) {
   const user_id = req.userData.user_id;
   try {
-    const response = await Appointment.findOne({
-      attributes: ["date", "petOwnerId"],
+    const response = await Appointment.findAll({
+      attributes: ["date", "id", "petOwnerId"],
       where: { doctorId: user_id, status: "accepted" },
+      include: {
+        model: User,
+        as: "petOwner",
+        attributes: ["firstName", "lastName"],
+      },
     });
     //get info of petOwner
     res.send(response);
