@@ -108,19 +108,40 @@ async function getmyProfile(req, res) {
   }
 }
 
+function getEndTime(start_time) {
+  const startTimeParts = start_time.split(":");
+  const date = new Date();
+  date.setHours(
+    parseInt(startTimeParts[0], 10),
+    parseInt(startTimeParts[1], 10),
+    parseInt(startTimeParts[2], 10)
+  );
+  date.setHours(date.getHours() + 1);
+
+  // Format the end_time as "hh:mm:ss"
+  const end_time = `${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes()
+  ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+
+  return end_time;
+}
+
 async function bookAppointment(req, res) {
   const user_id = req.userData.user_id;
-  const { doctorId, petOwnerId, date } = req.body;
+  const { doctorId, petId, date, start_time } = req.body;
 
   try {
     const isAlreadyBooked = await Appointment.findAll({
       where: {
         date,
         doctorId,
+        start_time,
+        status: "accepted",
       },
     });
+    console.log(req.body);
 
-    if (isAlreadyBooked) {
+    if (isAlreadyBooked.length > 0) {
       return res.status(400).json({
         message: "Appointment already booked!",
       });
@@ -128,9 +149,11 @@ async function bookAppointment(req, res) {
 
     const newAppointment = await Appointment.create({
       date,
-      petId: petOwnerId,
+      petId,
       doctorId,
       petOwnerId: user_id,
+      start_time,
+      end_time: getEndTime(start_time),
     });
     return res.status(201).json({
       message: "Appointment created successfully!",
