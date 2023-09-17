@@ -1,4 +1,4 @@
-const { Model } = require("sequelize");
+const { Sequelize, Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Appointment extends Model {
@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "pending",
       },
+      start_time: Sequelize.TIME,
+      end_time: Sequelize.TIME,
     },
     {
       sequelize,
