@@ -319,18 +319,36 @@ async function getrejectedAppointments(req, res) {
 
 async function acceptAppointment(req, res) {
   // const user_id = req.userData.user_id;
-  const appointmentId = req.body;
+  const { appointmentId } = req.body;
 
   try {
-    const response = await Post.update(
-      { status: "accepted" },
-      { where: { id: appointmentId } }
-    );
-    if (response[0] === 0) {
+    // const response = await Appointment.update(
+    //   { status: "accepted" },
+    //   { where: { id: appointmentId } }
+    // );
+    const acceptedAppointment = await Appointment.findOne({
+      where: { id: appointmentId },
+    });
+    if (!acceptedAppointment) {
       return res.status(404).json({
-        message: "post not found!",
+        message: "Appointment not found!",
       });
     }
+
+    acceptedAppointment.status = "accepted";
+    acceptedAppointment.save();
+
+    await Appointment.update(
+      { status: "rejected" },
+      {
+        where: {
+          date: acceptedAppointment.date,
+          doctorId: acceptedAppointment.doctorId,
+          start_time: acceptedAppointment.start_time,
+          status: "pending",
+        },
+      }
+    );
 
     return res.status(201).json({
       message: "Appointment accepted successfully!",
@@ -344,10 +362,10 @@ async function acceptAppointment(req, res) {
 }
 async function rejectAppointment(req, res) {
   // const user_id = req.userData.user_id;
-  const appointmentId = req.body;
+  const { appointmentId } = req.body;
 
   try {
-    const response = await Post.update(
+    const response = await Appointment.update(
       { status: "rejected" },
       { where: { id: appointmentId } }
     );
