@@ -15,6 +15,8 @@ router.post("/unfollow", UserController.unfollowUser);
 router.get("/doctorProfile/:id", UserController.getDoctorProfile);
 router.get("/petOwnerProfile/:id", UserController.getPetOwnerProfile);
 
+router.get("/post/:postId", UserController.getDoctorPost);
+
 router.post("/like", UserController.likePost);
 router.post("/unlike", UserController.unlikePost);
 router.post("/comment", UserController.createComment);
