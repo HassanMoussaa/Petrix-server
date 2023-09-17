@@ -301,6 +301,24 @@ async function createComment(req, res) {
   }
 }
 
+async function getPostComments(req, res) {
+  const { postId } = req.params;
+
+  try {
+    const response = await Comment.findAll({
+      attributes: ["body"],
+      where: { postId: postId },
+    });
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 async function deleteComment(req, res) {
   const user_id = req.userData.user_id;
   const { id } = req.params;
@@ -485,4 +503,5 @@ module.exports = {
   searchUsers,
   getTopDoctors,
   getDoctorPost,
+  getPostComments,
 };
