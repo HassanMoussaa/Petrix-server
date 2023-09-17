@@ -306,7 +306,7 @@ async function getPostComments(req, res) {
 
   try {
     const response = await Comment.findAll({
-      attributes: ["body", "userId"],
+      attributes: ["body", "userId", "createdAt"],
       where: { postId: postId },
       include: {
         model: User,
