@@ -60,6 +60,15 @@ module.exports = (sequelize, DataTypes) => {
         as: "following",
         foreignKey: "id",
       });
+
+      this.hasMany(models.Review, {
+        foreignKey: "id",
+        as: "doctorReviews",
+      });
+      this.hasMany(models.Review, {
+        foreignKey: "id",
+        as: "petOwnerReviews",
+      });
     }
   }
 
