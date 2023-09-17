@@ -283,15 +283,25 @@ async function createComment(req, res) {
   const { body, postId } = req.body;
 
   try {
-    const comment = await Comment.create({
+    const createdComment = await Comment.create({
       body,
       postId,
       userId: user_id,
     });
 
+    const response = await Comment.findOne({
+      attributes: ["body", "userId", "createdAt", "id"],
+      where: { id: createdComment.id },
+      include: {
+        model: User,
+        as: "user",
+        attributes: ["firstName", "lastName"],
+      },
+    });
+
     return res.status(201).json({
       message: "Comment creation successful!",
-      comment: comment,
+      comment: response,
     });
   } catch (error) {
     return res.status(500).json({
