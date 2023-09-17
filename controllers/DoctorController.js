@@ -174,6 +174,29 @@ async function getDoctorPosts(req, res) {
   }
 }
 
+async function getDoctorPost(req, res) {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findOne({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    res.json(post);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 async function createDoctorPost(req, res) {
   const doc_id = req.userData.user_id;
   const v = new Validator();
@@ -410,4 +433,5 @@ module.exports = {
   rejectAppointment,
   getAcceptedAppointments,
   setAvailability,
+  getDoctorPost,
 };
