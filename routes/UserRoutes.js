@@ -20,6 +20,7 @@ router.get("/post/:postId", UserController.getDoctorPost);
 router.post("/like", UserController.likePost);
 router.post("/unlike", UserController.unlikePost);
 router.post("/comment", UserController.createComment);
+router.get("/comments/:postId", UserController.getPostComments);
 
 router.delete("/comment/:id", UserController.deleteComment);
 
