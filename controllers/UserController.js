@@ -4,7 +4,14 @@ const Validator = require("fastest-validator");
 const bcryptjs = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 
-const { User, UserFollower, Like, Comment, Appointment } = require("../models");
+const {
+  User,
+  UserFollower,
+  Like,
+  Comment,
+  Appointment,
+  Post,
+} = require("../models");
 
 async function login(req, res) {
   const v = new Validator();
@@ -158,6 +165,29 @@ async function getDoctorProfile(req, res) {
     res.status(500).json({
       message: "Something went wrong!",
       error: error,
+    });
+  }
+}
+
+async function getDoctorPost(req, res) {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findOne({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    res.json(post);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
     });
   }
 }
@@ -454,4 +484,5 @@ module.exports = {
   editComment,
   searchUsers,
   getTopDoctors,
+  getDoctorPost,
 };
