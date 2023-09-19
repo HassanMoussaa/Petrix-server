@@ -1,6 +1,6 @@
 // const User = require("../models/user");
 // const User = require("../models/user.js");
-const { User, Pet, Appointment, Availability } = require("../models");
+const { User, Pet, Appointment, Availability, Review } = require("../models");
 const moment = require("moment");
 
 const bcryptjs = require("bcryptjs");
@@ -239,9 +239,60 @@ async function getAvailableSlots(req, res) {
   }
 }
 
+async function addReview(req, res) {
+  const user_id = req.userData.user_id;
+  const v = new Validator();
+  const schema = {
+    body: { type: "string", optional: false, min: 2 },
+    rate: { type: "number", optional: false, max: 5 },
+  };
+
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: "Validation Failed!",
+      errors: validation_response,
+    });
+  }
+
+  const { body, rate } = req.body;
+  const { doctor_id } = req.params;
+
+  try {
+    const createdReview = await Review.create({
+      body,
+      rate,
+      doctor_id,
+      petOwner_id: user_id,
+    });
+
+    const response = await Review.findOne({
+      attributes: ["body", "rate", "createdAt", "id", "petOwner_id"],
+      where: { id: createdReview.id },
+      include: {
+        model: User,
+        as: "petOwner",
+        attributes: ["firstName", "lastName", "photoUrl"],
+      },
+    });
+
+    return res.status(201).json({
+      message: "Review creation successful!",
+      comment: response,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   register,
   getmyProfile,
   bookAppointment,
   getAvailableSlots,
+  addReview,
 };
