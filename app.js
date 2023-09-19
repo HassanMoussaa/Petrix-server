@@ -15,6 +15,7 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/images", express.static("images/profile_pictures"));
 app.use("/doctors", doctorRoutes);
 app.use("/petOwners", petOwnerRoutes);
 app.use("/users", userRoutes);
