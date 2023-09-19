@@ -538,27 +538,26 @@ async function getTopDoctors(req, res) {
 //   }
 // }
 
-// async function changeProfilePicture(req, res) {
-//   const id = req.userData.user_id;
+async function changeProfilePicture(req, res) {
+  const id = req.userData.user_id;
 
-//   try {
-//     const user = await User.findOne({
-//       where: { id: id },
-//     });
+  try {
+    const user = await User.findOne({
+      where: { id: id },
+    });
 
-// http://127.0.0.1:8000
-//     user.profile_picture =
-//       "https://foot2gether.ml/profile_picture/" + req.file.filename;
+    user.photoUrl = "http://127.0.0.1:8000/images/" + req.file.filename;
 
-//     const response = await user.save();
+    const response = await user.save();
 
-//     res.send(response.profile_picture);
-//   } catch (error) {
-//     res.status(500).json({
-//       message: "Something went wrong!",
-//       error: error,
-//     });
-//   }
+    res.send(response.photoUrl);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
 
 module.exports = {
   login,
@@ -575,4 +574,5 @@ module.exports = {
   getTopDoctors,
   getDoctorPost,
   getPostComments,
+  changeProfilePicture,
 };
