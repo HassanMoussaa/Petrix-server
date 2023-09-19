@@ -173,7 +173,7 @@ async function getDoctorProfile(req, res) {
           include: {
             model: User,
             as: "petOwner",
-            attributes: ["id", "firstName", "lastName"],
+            attributes: ["id", "firstName", "lastName", "photoUrl"],
           },
         },
       ],
