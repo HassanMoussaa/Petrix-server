@@ -559,7 +559,6 @@ async function getTopDoctors(req, res) {
 //       error: error,
 //     });
 //   }
-// }
 
 module.exports = {
   login,
