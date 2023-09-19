@@ -6,6 +6,7 @@ const {
   UserFollower,
   Appointment,
   UserType,
+  Review,
 } = require("../models");
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
@@ -119,6 +120,7 @@ async function getMyProfile(req, res) {
         "email",
       ],
       where: { id: user_id },
+      // include: { all: true },
       include: [
         {
           model: Specialties,
@@ -135,6 +137,16 @@ async function getMyProfile(req, res) {
           as: "posts",
           attributes: ["id", "title", "body", "createdAt"],
         },
+        {
+          model: Review,
+          as: "doctorReviews",
+          attributes: ["id", "body", "rate", "createdAt"],
+          include: {
+            model: User,
+            as: "petOwner",
+            attributes: ["id", "firstName", "lastName", "photoUrl"],
+          },
+        },
       ],
     });
 
@@ -147,6 +159,11 @@ async function getMyProfile(req, res) {
       where: { doctorId: user_id },
     });
     response.dataValues.appointmentCount = appointmentCount;
+
+    const averageRate =
+      response.doctorReviews.reduce((sum, review) => sum + review.rate, 0) /
+      response.doctorReviews.length;
+    response.dataValues.averageRate = averageRate;
 
     res.send(response);
   } catch (error) {
