@@ -22,6 +22,9 @@ async function register(req, res) {
   console.log("Request Body:", req.body);
   const validation_response = v.validate(req.body, schema);
 
+  const profile_picture =
+    "http://127.0.0.1:8000/images/profile_pictures/default_profile_picture.jpg";
+
   if (validation_response !== true) {
     return res.status(400).json({
       message: "Validation Failed!",
@@ -64,7 +67,7 @@ async function register(req, res) {
       country,
       profile,
       phone,
-      photoUrl,
+      photoUrl: profile_picture,
       userTypeId,
     });
 
