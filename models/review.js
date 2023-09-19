@@ -8,22 +8,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.User, {
-        foreignKey: "petOwner_id",
-        as: "petOwner",
-      });
-      this.belongsTo(models.User, {
-        foreignKey: "doctor_id",
-        as: "doctor",
-      });
+      // define association here
     }
   }
   Review.init(
     {
-      petOwner_id: DataTypes.INTEGER,
-      doctor_id: DataTypes.INTEGER,
-      review: DataTypes.TEXT,
-      rate: DataTypes.INTEGER,
+      body: DataTypes.TEXT,
+      rate: {
+        type: DataTypes.INTEGER,
+        validate: {
+          max: 5,
+        },
+      },
     },
     {
       sequelize,
