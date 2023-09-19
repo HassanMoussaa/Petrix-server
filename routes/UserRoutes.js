@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/UserController");
 const checkAuthMiddleware = require("../middleware/check-auth");
+const ProfilePictureUploader = require("../middleware/profile-picture-uploader");
 
 router.post("/login", UserController.login);
 router.get("/topDoctors", UserController.getTopDoctors);
@@ -14,7 +15,11 @@ router.post("/follow", UserController.followUser);
 router.post("/unfollow", UserController.unfollowUser);
 router.get("/doctorProfile/:id", UserController.getDoctorProfile);
 router.get("/petOwnerProfile/:id", UserController.getPetOwnerProfile);
-router.post("/profilePicture", UserController.changeProfilePicture);
+router.post(
+  "/profilePicture",
+  ProfilePictureUploader.upload.single("image"),
+  UserController.changeProfilePicture
+);
 
 router.get("/post/:postId", UserController.getDoctorPost);
 
