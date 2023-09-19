@@ -60,6 +60,9 @@ async function register(req, res) {
     specialties,
   } = req.body;
 
+  const profile_picture =
+    "http://127.0.0.1:8000/images/profile_pictures/default_profile_picture.jpg";
+
   try {
     const isEmailUsed = await User.findOne({ where: { email: email } });
     if (isEmailUsed) {
@@ -83,7 +86,7 @@ async function register(req, res) {
       country,
       profile,
       phone,
-      photoUrl,
+      photoUrl: profile_picture,
       userTypeId,
     });
 
