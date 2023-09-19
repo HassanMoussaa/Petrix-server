@@ -11,6 +11,9 @@ const {
   Comment,
   Appointment,
   Post,
+  Specialties,
+  Review,
+  UserType,
 } = require("../models");
 
 async function login(req, res) {
@@ -131,9 +134,9 @@ async function unfollowUser(req, res) {
 }
 
 async function getDoctorProfile(req, res) {
-  const { user_id: doc_id } = req.params;
+  const { id } = req.params;
   // const user_id = req.userData.user_id;
-
+  console.log(id);
   try {
     const response = await User.findOne({
       attributes: [
@@ -146,25 +149,56 @@ async function getDoctorProfile(req, res) {
         "phone",
         "photoUrl",
       ],
-      where: { id: doc_id },
-      include: { all: true },
+      where: { id: id },
+      include: [
+        {
+          model: Specialties,
+          as: "specialties",
+          attributes: ["id", "speciality"],
+        },
+        {
+          model: UserType,
+          as: "userType",
+          attributes: ["id", "type"],
+        },
+        {
+          model: Post,
+          as: "posts",
+          attributes: ["id", "title", "body", "createdAt"],
+        },
+        {
+          model: Review,
+          as: "doctorReviews",
+          attributes: ["id", "body", "rate", "createdAt"],
+          include: {
+            model: User,
+            as: "petOwner",
+            attributes: ["id", "firstName", "lastName"],
+          },
+        },
+      ],
     });
 
     const followerCount = await UserFollower.count({
-      where: { followingId: doc_id },
+      where: { followingId: id },
     });
     response.dataValues.followerCount = followerCount;
 
     const appointmentCount = await Appointment.count({
-      where: { doctorId: doc_id },
+      where: { doctorId: id },
     });
     response.dataValues.appointmentCount = appointmentCount;
+
+    const averageRate =
+      response.doctorReviews.reduce((sum, review) => sum + review.rate, 0) /
+      response.doctorReviews.length;
+    response.dataValues.averageRate = averageRate;
 
     res.send(response);
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong!",
-      error: error,
+      error: error.message,
     });
   }
 }
@@ -496,6 +530,29 @@ async function getTopDoctors(req, res) {
 //     }
 
 //     res.send(topDoctors);
+//   } catch (error) {
+//     res.status(500).json({
+//       message: "Something went wrong!",
+//       error: error,
+//     });
+//   }
+// }
+
+// async function changeProfilePicture(req, res) {
+//   const id = req.userData.user_id;
+
+//   try {
+//     const user = await User.findOne({
+//       where: { id: id },
+//     });
+
+// http://127.0.0.1:8000
+//     user.profile_picture =
+//       "https://foot2gether.ml/profile_picture/" + req.file.filename;
+
+//     const response = await user.save();
+
+//     res.send(response.profile_picture);
 //   } catch (error) {
 //     res.status(500).json({
 //       message: "Something went wrong!",
