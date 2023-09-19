@@ -11,6 +11,8 @@ router.use(checkAuthMiddleware.checkAuthPetOwner);
 // Specific to pet owners
 
 router.get("/myProfile", PetOwnerController.getmyProfile);
+router.post("/review/:doctor_id", PetOwnerController.addReview);
+
 router.post("/appointment", PetOwnerController.bookAppointment);
 
 router.get("/availableSlots", PetOwnerController.getAvailableSlots);
