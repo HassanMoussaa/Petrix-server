@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       this.hasMany(models.Pet, {
-        foreignKey: "id",
+        foreignKey: "userId",
         as: "pets",
       });
 
