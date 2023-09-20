@@ -14,6 +14,7 @@ const {
   Specialties,
   Review,
   UserType,
+  DoctorLocations,
 } = require("../models");
 
 async function login(req, res) {
@@ -175,6 +176,11 @@ async function getDoctorProfile(req, res) {
             as: "petOwner",
             attributes: ["id", "firstName", "lastName", "photoUrl"],
           },
+        },
+        {
+          model: DoctorLocations,
+          as: "clinicLocations",
+          attributes: ["id", "latitude", "longitude", "name"],
         },
       ],
     });
