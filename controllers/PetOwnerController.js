@@ -213,7 +213,8 @@ async function filterAvailableSlots(availableSlots, date_obj, docId) {
 }
 
 async function getAvailableSlots(req, res) {
-  const { docId, date } = req.body;
+  const { docId, date } = req.query;
+
   const date_obj = new Date(date);
 
   try {
