@@ -15,6 +15,7 @@ const {
   Review,
   UserType,
   DoctorLocations,
+  FirebaseToken,
 } = require("../models");
 
 async function login(req, res) {
@@ -591,6 +592,28 @@ async function changeProfilePicture(req, res) {
   }
 }
 
+async function saveNotificationToken(req, res) {
+  const id = req.userData.user_id;
+
+  const { notification_token } = req.body;
+
+  try {
+    const user = await FirebaseToken.create({
+      user_id: id,
+      token: notification_token,
+    });
+
+    const response = await user.save();
+
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
@@ -607,4 +630,5 @@ module.exports = {
   getDoctorPost,
   getPostComments,
   changeProfilePicture,
+  saveNotificationToken,
 };
