@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       this.hasMany(models.Like, {
-        foreignKey: "id",
+        foreignKey: "postId",
         as: "postLikes",
       });
       this.hasMany(models.Comment, {
-        foreignKey: "id",
+        foreignKey: "postId",
         as: "postComments",
       });
     }
