@@ -69,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "petOwner_id",
         as: "petOwnerReviews",
       });
+      this.hasMany(models.FirebaseToken, {
+        foreignKey: "user_id",
+        as: "tokens",
+      });
     }
   }
 
