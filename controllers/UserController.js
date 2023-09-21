@@ -166,6 +166,11 @@ async function getDoctorProfile(req, res) {
           model: Post,
           as: "posts",
           attributes: ["id", "title", "body", "createdAt"],
+          include: {
+            model: Like,
+            as: "postLikes",
+            attributes: ["userId", "postId"],
+          },
         },
         {
           model: Review,
@@ -209,6 +214,17 @@ async function getDoctorProfile(req, res) {
       is_followed = true;
     }
     response.dataValues.check_if_followed = is_followed;
+    console.log("hi", response.dataValues.posts);
+
+    response.dataValues.posts.forEach((post) => {
+      post.dataValues.is_liked = false;
+      for (const postLike of post.dataValues.postLikes) {
+        if (postLike.userId == user_id) {
+          post.dataValues.is_liked = true;
+          break;
+        }
+      }
+    });
 
     res.send(response);
   } catch (error) {
