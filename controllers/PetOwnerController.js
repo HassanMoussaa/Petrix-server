@@ -1,6 +1,7 @@
 // const User = require("../models/user");
 // const User = require("../models/user.js");
 const { User, Pet, Appointment, Availability, Review } = require("../models");
+const FCMController = require("./FCMController");
 const moment = require("moment");
 
 const bcryptjs = require("bcryptjs");
@@ -129,20 +130,21 @@ function getEndTime(start_time) {
   return end_time;
 }
 
-async function bookAppointment(req, res) {
+async function bookAppointment(req, res, next) {
   const user_id = req.userData.user_id;
   const { doctorId, petId, date, start_time } = req.body;
-
+  const date_obj = moment(date).toDate();
   try {
     const isAlreadyBooked = await Appointment.findAll({
       where: {
-        date,
+        date: date_obj,
         doctorId,
         start_time,
         status: "accepted",
       },
     });
-    console.log(req.body);
+    console.log(isAlreadyBooked);
+    console.log(date_obj);
 
     if (isAlreadyBooked.length > 0) {
       return res.status(400).json({
@@ -158,6 +160,20 @@ async function bookAppointment(req, res) {
       start_time,
       end_time: getEndTime(start_time),
     });
+
+    // setting the notification info
+    const notification_info = {
+      doctor_name: "Hassan",
+      pet_owner_name: "John cena",
+      app_date: newAppointment.date,
+      app_time: newAppointment.time,
+    };
+
+    req.notificationInfo = notification_info;
+    req.pet_owner_token =
+      "d3jGoD56VJbXdje2E0Zlyg:APA91bFg72-hMh4IFCWfvJLoqWCSsOt0LNDCNyteulxWNLt1-OIdGkCcm5kkNwAnC-aX9VMN3QZyLTdGSH4jm9Ab5S4FKEESH2Z2w-N1AjhiQFkNsaV20NhY0nCVtJupIBszf-v_5Vs5";
+    FCMController.sendNotification(req, res, next);
+
     return res.status(201).json({
       message: "Appointment created successfully!",
       Appointment: newAppointment,
