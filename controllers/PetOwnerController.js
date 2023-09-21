@@ -283,7 +283,7 @@ async function addReview(req, res) {
 
     return res.status(201).json({
       message: "Review creation successful!",
-      comment: response,
+      review: response,
     });
   } catch (error) {
     return res.status(500).json({
