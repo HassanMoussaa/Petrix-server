@@ -136,7 +136,7 @@ async function unfollowUser(req, res) {
 
 async function getDoctorProfile(req, res) {
   const { id } = req.params;
-  // const user_id = req.userData.user_id;
+  const user_id = req.userData.user_id;
   console.log(id);
   try {
     const response = await User.findOne({
@@ -199,6 +199,16 @@ async function getDoctorProfile(req, res) {
       response.doctorReviews.reduce((sum, review) => sum + review.rate, 0) /
       response.doctorReviews.length;
     response.dataValues.averageRate = averageRate;
+
+    const check_if_followed = await UserFollower.findOne({
+      where: { followerId: user_id, followingId: id },
+    });
+
+    let is_followed = false;
+    if (check_if_followed) {
+      is_followed = true;
+    }
+    response.dataValues.check_if_followed = is_followed;
 
     res.send(response);
   } catch (error) {
