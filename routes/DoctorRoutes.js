@@ -21,4 +21,6 @@ router.put("/rejectAppointment", DoctorController.rejectAppointment);
 router.get("/acceptedAppointments", DoctorController.getAcceptedAppointments);
 router.post("/availability", DoctorController.setAvailability);
 
+router.post("/location", DoctorController.saveDoctorLocation);
+
 module.exports = router;
