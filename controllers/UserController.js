@@ -462,17 +462,25 @@ async function editComment(req, res) {
 async function searchUsers(req, res) {
   const user_id = req.userData.user_id;
   const { keyword } = req.params;
-  const { specialtyId } = req.body;
+  const { breed, userTypeId } = req.query;
 
   try {
     let response = await User.findAll({
-      attributes: ["id", "firstName", "lastName", "photoUrl"],
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "photoUrl",
+        "country",
+        "city",
+      ],
       where: {
         [Op.or]: [
           { firstName: { [Op.like]: "%" + keyword + "%" } },
           { lastName: { [Op.like]: "%" + keyword + "%" } },
         ],
         id: { [Op.not]: user_id },
+        userTypeId: userTypeId,
       },
       include: ["follower", "specialties"],
     });
@@ -487,10 +495,10 @@ async function searchUsers(req, res) {
       }
     });
 
-    if (specialtyId) {
+    if (breed) {
       response = response.filter((user) => {
-        for (const specialty of user.dataValues.specialties) {
-          if (specialty.id === specialtyId) {
+        for (const speciality of user.dataValues.specialties) {
+          if (speciality.speciality.toUpperCase() === breed.toUpperCase()) {
             return true;
           }
         }
@@ -502,7 +510,7 @@ async function searchUsers(req, res) {
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong!",
-      error: error,
+      error: error.message,
     });
   }
 }
