@@ -138,7 +138,7 @@ async function unfollowUser(req, res) {
 async function getDoctorProfile(req, res) {
   const { id } = req.params;
   const user_id = req.userData.user_id;
-  console.log(id);
+  console.log("TEST:: ", user_id);
   try {
     const response = await User.findOne({
       attributes: [
@@ -186,7 +186,7 @@ async function getDoctorProfile(req, res) {
         {
           model: DoctorLocations,
           as: "clinicLocations",
-          attributes: ["id", "latitude", "longitude", "name"],
+          attributes: ["latitude", "longitude"],
         },
       ],
     });
