@@ -7,6 +7,7 @@ const {
   Appointment,
   UserType,
   Review,
+  DoctorLocations,
 } = require("../models");
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
@@ -149,6 +150,11 @@ async function getMyProfile(req, res) {
             as: "petOwner",
             attributes: ["id", "firstName", "lastName", "photoUrl"],
           },
+        },
+        {
+          model: DoctorLocations,
+          as: "clinicLocations",
+          attributes: ["latitude", "longitude"],
         },
       ],
     });
@@ -460,6 +466,29 @@ async function setAvailability(req, res) {
   }
 }
 
+async function saveDoctorLocation(req, res) {
+  const doc_id = req.userData.user_id;
+
+  const { lat, lng } = req.body;
+
+  try {
+    await DoctorLocations.create({
+      latitude: lat,
+      longitude: lng,
+      docId: doc_id,
+    });
+
+    return res.status(201).json({
+      message: "clinic location saved successful!",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   register,
   getMyProfile,
@@ -472,4 +501,5 @@ module.exports = {
   getAcceptedAppointments,
   setAvailability,
   getDoctorPost,
+  saveDoctorLocation,
 };
