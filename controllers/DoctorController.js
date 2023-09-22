@@ -472,11 +472,23 @@ async function saveDoctorLocation(req, res) {
   const { lat, lng } = req.body;
 
   try {
-    await DoctorLocations.create({
-      latitude: lat,
-      longitude: lng,
-      docId: doc_id,
+    const doctorLocation = await DoctorLocations.findOne({
+      where: {
+        docId: doc_id,
+      },
     });
+
+    if (doctorLocation) {
+      doctorLocation.latitude = lat;
+      doctorLocation.longitude = lng;
+      doctorLocation.save();
+    } else {
+      await DoctorLocations.create({
+        latitude: lat,
+        longitude: lng,
+        docId: doc_id,
+      });
+    }
 
     return res.status(201).json({
       message: "clinic location saved successful!",
