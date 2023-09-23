@@ -9,6 +9,7 @@ const {
   Review,
   DoctorLocations,
 } = require("../models");
+const FCMController = require("./FCMController");
 const bcryptjs = require("bcryptjs");
 const Validator = require("fastest-validator");
 const appointment = require("../models/appointment");
@@ -343,8 +344,8 @@ async function getrejectedAppointments(req, res) {
   }
 }
 
-async function acceptAppointment(req, res) {
-  // const user_id = req.userData.user_id;
+async function acceptAppointment(req, res, next) {
+  const user_id = req.userData.user_id;
   const { appointmentId } = req.body;
 
   try {
@@ -354,6 +355,7 @@ async function acceptAppointment(req, res) {
     // );
     const acceptedAppointment = await Appointment.findOne({
       where: { id: appointmentId },
+      include: ["petOwner"],
     });
     if (!acceptedAppointment) {
       return res.status(404).json({
@@ -376,6 +378,29 @@ async function acceptAppointment(req, res) {
       }
     );
 
+    const user = await User.findOne({
+      where: {
+        id: user_id,
+      },
+    });
+    const petOwner = await User.findOne({
+      where: acceptedAppointment.petOwner.id,
+    });
+
+    // setting the notification info
+    const notification_info = {
+      doctor_name: `${user.firstName} ${user.lastName}`,
+      pet_owner_name: `${petOwner.firstName} ${petOwner.lastName}`,
+      app_date: acceptedAppointment.date,
+      app_time: acceptedAppointment.start_time,
+      doc_id: user_id,
+      petOwner_id: acceptedAppointment.petOwner.id,
+      notification_type: "accepted_appointment_notification",
+    };
+
+    req.notificationInfo = notification_info;
+    FCMController.sendNotification(req, res, next);
+
     return res.status(201).json({
       message: "Appointment accepted successfully!",
     });
@@ -386,20 +411,41 @@ async function acceptAppointment(req, res) {
     });
   }
 }
-async function rejectAppointment(req, res) {
-  // const user_id = req.userData.user_id;
+async function rejectAppointment(req, res, next) {
+  const user_id = req.userData.user_id;
   const { appointmentId } = req.body;
 
   try {
-    const response = await Appointment.update(
-      { status: "rejected" },
-      { where: { id: appointmentId } }
-    );
-    if (response[0] === 0) {
-      return res.status(404).json({
-        message: "Appointment not found!",
-      });
-    }
+    const rejectedAppointment = await Appointment.findOne({
+      where: { id: appointmentId },
+      include: ["petOwner"],
+    });
+
+    rejectedAppointment.status = "rejected";
+    rejectedAppointment.save();
+
+    const user = await User.findOne({
+      where: {
+        id: user_id,
+      },
+    });
+    const petOwner = await User.findOne({
+      where: rejectedAppointment.petOwner.id,
+    });
+
+    // setting the notification info
+    const notification_info = {
+      doctor_name: `${user.firstName} ${user.lastName}`,
+      pet_owner_name: `${petOwner.firstName} ${petOwner.lastName}`,
+      app_date: rejectedAppointment.date,
+      app_time: rejectedAppointment.start_time,
+      doc_id: user_id,
+      petOwner_id: rejectedAppointment.petOwner.id,
+      notification_type: "rejected_appointment_notification",
+    };
+
+    req.notificationInfo = notification_info;
+    FCMController.sendNotification(req, res, next);
 
     return res.status(201).json({
       message: "Appointment rejected successfully!",
