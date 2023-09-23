@@ -143,8 +143,6 @@ async function bookAppointment(req, res, next) {
         status: "accepted",
       },
     });
-    console.log(isAlreadyBooked);
-    console.log(date_obj);
 
     if (isAlreadyBooked.length > 0) {
       return res.status(400).json({
@@ -161,17 +159,28 @@ async function bookAppointment(req, res, next) {
       end_time: getEndTime(start_time),
     });
 
+    const user = await User.findOne({
+      where: {
+        id: user_id,
+      },
+    });
+    const doctor = await User.findOne({
+      where: {
+        id: doctorId,
+      },
+    });
+
     // setting the notification info
     const notification_info = {
-      doctor_name: "Hassan",
-      pet_owner_name: "John cena",
+      doctor_name: `${doctor.firstName} ${doctor.lastName}`,
+      pet_owner_name: `${user.firstName} ${user.lastName}`,
       app_date: newAppointment.date,
-      app_time: newAppointment.time,
+      app_time: newAppointment.start_time,
+      doc_id: doctorId,
+      notification_type: "new_booking_notification",
     };
 
     req.notificationInfo = notification_info;
-    req.pet_owner_token =
-      "d3jGoD56VJbXdje2E0Zlyg:APA91bFg72-hMh4IFCWfvJLoqWCSsOt0LNDCNyteulxWNLt1-OIdGkCcm5kkNwAnC-aX9VMN3QZyLTdGSH4jm9Ab5S4FKEESH2Z2w-N1AjhiQFkNsaV20NhY0nCVtJupIBszf-v_5Vs5";
     FCMController.sendNotification(req, res, next);
 
     return res.status(201).json({
@@ -239,6 +248,12 @@ async function getAvailableSlots(req, res) {
       where: { userId: docId, day: date_obj.getDay() },
     });
 
+    if (!availibility) {
+      return res.status(200).json({
+        message: "No available slots!",
+        availableSlots: [],
+      });
+    }
     const availableSlots = generateAvailableSlots(
       availibility.start_time,
       availibility.end_time
