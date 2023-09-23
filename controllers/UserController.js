@@ -520,6 +520,13 @@ async function getTopDoctors(req, res) {
     const doctors = await User.findAll({
       where: { userTypeId: 2 },
       attributes: ["id", "firstName", "lastName", "photoUrl"],
+      include: [
+        {
+          model: Review,
+          as: "doctorReviews",
+          attributes: ["rate"],
+        },
+      ],
     });
 
     const doctorsWithCounts = await Promise.all(
@@ -528,6 +535,12 @@ async function getTopDoctors(req, res) {
           where: { doctorId: doctor.id },
         });
         doctor.dataValues.appointmentCount = appointmentCount;
+
+        const doctorReviews = doctor.doctorReviews || [];
+        const averageRate =
+          doctorReviews.reduce((sum, review) => sum + review.rate, 0) /
+          (doctorReviews.length || 1);
+        doctor.dataValues.averageRate = averageRate;
         return doctor;
       })
     );
