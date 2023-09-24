@@ -35,4 +35,6 @@ router.put("/comment/:id", UserController.editComment);
 router.get("/search/:keyword", UserController.searchUsers);
 router.post("/save_notification_token", UserController.saveNotificationToken);
 
+router.get("/doctors_near_you", UserController.getDoctorsNearYou);
+
 module.exports = router;
