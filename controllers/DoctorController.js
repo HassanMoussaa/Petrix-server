@@ -496,9 +496,8 @@ async function getAcceptedAppointments(req, res) {
   }
 }
 
-async function setAvailability(req, res) {
-  const doc_id = req.userData.user_id;
-  const { days, start_time, end_time } = req.body;
+async function setDoctorAvailibity(availability) {
+  const { days, start_time, end_time } = availability;
 
   try {
     const availabilityPromises = days.map(async (day) => {
@@ -514,11 +513,72 @@ async function setAvailability(req, res) {
     });
 
     // Wait for all the availability rows to be created
-    const availabilities = await Promise.all(availabilityPromises);
+    await Promise.all(availabilityPromises);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
 
-    return res.status(200).json({
-      message: "Availability has been set for multiple days",
-      availabilities: availabilities,
+async function updateDoctorProfile(req, res) {
+  const doc_id = req.userData.user_id;
+
+  const v = new Validator();
+  const schema = {
+    profile: { type: "string", optional: true },
+    phone: { type: "string", optional: true },
+    availability: {
+      $$type: "object",
+      days: { type: "array" },
+      start_time: { type: "string" },
+      end_time: { type: "string" },
+    },
+    specialties: {
+      type: "array",
+      items: {
+        type: "number",
+        positive: true,
+        integer: true,
+      },
+      optional: true,
+      min: 1,
+      max: 4,
+    },
+    // clinicLocations: { type: 'array',items:"string", optional: true }, // Array of clinic locations
+  };
+  console.log("Request Body:", req.body);
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: "Validation Failed!",
+      errors: validation_response,
+    });
+  }
+
+  const { profile, phone, specialties, availability } = req.body;
+
+  try {
+    const doctor = await User.update(
+      {
+        profile,
+        phone,
+      },
+      { where: { id: doc_id } }
+    );
+
+    if (specialties) {
+      // check if this will override or add new specilities
+      await doctor.setSpecialties(specialties);
+    }
+
+    setDoctorAvailibity(availability);
+
+    return res.status(201).json({
+      message: "Doctor registration successful!",
+      user: doctor,
     });
   } catch (error) {
     return res.status(500).json({
@@ -573,7 +633,7 @@ module.exports = {
   acceptAppointment,
   rejectAppointment,
   getAcceptedAppointments,
-  setAvailability,
+  updateDoctorProfile,
   getDoctorPost,
   saveDoctorLocation,
 };
