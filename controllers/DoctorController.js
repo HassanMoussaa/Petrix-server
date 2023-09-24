@@ -8,6 +8,7 @@ const {
   UserType,
   Review,
   DoctorLocations,
+  Like,
 } = require("../models");
 const FCMController = require("./FCMController");
 const bcryptjs = require("bcryptjs");
@@ -141,6 +142,11 @@ async function getMyProfile(req, res) {
           model: Post,
           as: "posts",
           attributes: ["id", "title", "body", "createdAt"],
+          include: {
+            model: Like,
+            as: "postLikes",
+            attributes: ["userId", "postId"],
+          },
         },
         {
           model: Review,
@@ -174,6 +180,16 @@ async function getMyProfile(req, res) {
       response.doctorReviews.reduce((sum, review) => sum + review.rate, 0) /
       response.doctorReviews.length;
     response.dataValues.averageRate = averageRate;
+
+    response.dataValues.posts.forEach((post) => {
+      post.dataValues.is_liked = false;
+      for (const postLike of post.dataValues.postLikes) {
+        if (postLike.userId == user_id) {
+          post.dataValues.is_liked = true;
+          break;
+        }
+      }
+    });
 
     res.send(response);
   } catch (error) {
