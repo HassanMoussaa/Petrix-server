@@ -636,6 +636,52 @@ async function saveNotificationToken(req, res) {
   }
 }
 
+async function getDoctorsNearYou(req, res) {
+  const user_id = req.userData.user_id;
+  let { lat, lng } = req.query;
+  const latitude = parseFloat(lat);
+  const longitude = parseFloat(lng);
+
+  try {
+    // const userLocationArray = userLocation.split(",").map(parseFloat);
+    // const lat = userLocationArray[0];
+    // const lng = userLocationArray[1];
+
+    const earthCircumferenceKm = 40075;
+    const maxDistanceKm = 40;
+
+    const degreesPerKm = 360 / earthCircumferenceKm;
+    const maxDistanceDegrees = maxDistanceKm * degreesPerKm;
+
+    const doctors = await DoctorLocations.findAll({
+      where: {
+        latitude: {
+          [Op.between]: [
+            latitude - maxDistanceDegrees,
+            latitude + maxDistanceDegrees,
+          ],
+        },
+        longitude: {
+          [Op.between]: [
+            longitude - maxDistanceDegrees,
+            longitude + maxDistanceDegrees,
+          ],
+        },
+      },
+      include: {
+        model: User,
+        as: "doctor",
+        attributes: ["firstName", "lastName", "photoUrl"],
+      },
+    });
+
+    res.json(doctors);
+  } catch (error) {
+    console.error("Error fetching doctors near location:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
 module.exports = {
   login,
   followUser,
@@ -653,4 +699,5 @@ module.exports = {
   getPostComments,
   changeProfilePicture,
   saveNotificationToken,
+  getDoctorsNearYou,
 };
