@@ -150,6 +150,7 @@ async function getDoctorProfile(req, res) {
         "profile",
         "phone",
         "photoUrl",
+        "email",
       ],
       where: { id: id },
       include: [
@@ -362,7 +363,7 @@ async function createComment(req, res) {
       include: {
         model: User,
         as: "user",
-        attributes: ["firstName", "lastName"],
+        attributes: ["firstName", "lastName", "photoUrl"],
       },
     });
 
@@ -388,7 +389,7 @@ async function getPostComments(req, res) {
       include: {
         model: User,
         as: "user",
-        attributes: ["firstName", "lastName"],
+        attributes: ["firstName", "lastName", "photoUrl"],
       },
     });
 
