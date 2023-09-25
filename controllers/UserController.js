@@ -16,6 +16,7 @@ const {
   UserType,
   DoctorLocations,
   FirebaseToken,
+  Pet,
 } = require("../models");
 
 async function login(req, res) {
@@ -682,6 +683,31 @@ async function getDoctorsNearYou(req, res) {
   }
 }
 
+async function savePet(req, res) {
+  const id = req.userData.user_id;
+  const { name, breed } = req.body;
+  const photo_url = "http://127.0.0.1:8000/pet_pictures/" + req.file.filename;
+
+  try {
+    const response = await Pet.create({
+      name,
+      breed,
+      photo_url,
+      userId: id,
+    });
+
+    res.send({
+      response: response,
+      message: "Pet saved Successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   login,
   followUser,
@@ -700,4 +726,5 @@ module.exports = {
   changeProfilePicture,
   saveNotificationToken,
   getDoctorsNearYou,
+  savePet,
 };
