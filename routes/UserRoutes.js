@@ -4,6 +4,7 @@ const router = express.Router();
 const UserController = require("../controllers/UserController");
 const checkAuthMiddleware = require("../middleware/check-auth");
 const ProfilePictureUploader = require("../middleware/profile-picture-uploader");
+const PetPictureUploader = require("../middleware/pet-picture-uploader");
 
 router.post("/login", UserController.login);
 router.get("/topDoctors", UserController.getTopDoctors);
@@ -36,5 +37,11 @@ router.get("/search/:keyword", UserController.searchUsers);
 router.post("/save_notification_token", UserController.saveNotificationToken);
 
 router.get("/doctors_near_you", UserController.getDoctorsNearYou);
+
+router.post(
+  "/save_pet",
+  PetPictureUploader.upload.single("image"),
+  UserController.savePet
+);
 
 module.exports = router;
