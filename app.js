@@ -16,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/images", express.static("images/profile_pictures"));
+app.use("/pet_pictures", express.static("images/pet_pictures"));
+
 app.use("/doctors", doctorRoutes);
 app.use("/petOwners", petOwnerRoutes);
 app.use("/users", userRoutes);
