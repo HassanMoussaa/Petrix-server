@@ -12,8 +12,10 @@ const {
 } = require("../models");
 const FCMController = require("./FCMController");
 const bcryptjs = require("bcryptjs");
+const { Sequelize } = require("sequelize");
 const Validator = require("fastest-validator");
 const appointment = require("../models/appointment");
+const Op = Sequelize.Op;
 
 async function register(req, res) {
   const v = new Validator();
@@ -162,6 +164,11 @@ async function getMyProfile(req, res) {
           model: DoctorLocations,
           as: "clinicLocations",
           attributes: ["latitude", "longitude"],
+        },
+        {
+          model: Availability,
+          as: "availabilities",
+          attributes: ["day", "start_time", "end_time"],
         },
       ],
     });
@@ -496,10 +503,16 @@ async function getAcceptedAppointments(req, res) {
   }
 }
 
-async function setDoctorAvailibity(availability) {
+async function setDoctorAvailibity(availability, doc_id, res) {
   const { days, start_time, end_time } = availability;
 
   try {
+    await Availability.destroy({
+      where: {
+        UserId: doc_id,
+      },
+    });
+
     const availabilityPromises = days.map(async (day) => {
       // You can create a new Availability row for each day here
       const availability = await Availability.create({
@@ -538,7 +551,7 @@ async function updateDoctorProfile(req, res) {
     specialties: {
       type: "array",
       items: {
-        type: "number",
+        type: "string",
         positive: true,
         integer: true,
       },
@@ -561,20 +574,25 @@ async function updateDoctorProfile(req, res) {
   const { profile, phone, specialties, availability } = req.body;
 
   try {
-    const doctor = await User.update(
-      {
-        profile,
-        phone,
-      },
-      { where: { id: doc_id } }
-    );
+    const doctor = await User.findOne({ where: { id: doc_id } });
+    doctor.profile = profile;
+    doctor.phone = phone;
+    doctor.save();
 
     if (specialties) {
-      // check if this will override or add new specilities
-      await doctor.setSpecialties(specialties);
+      // Remove all previous Specialties and set the new ones
+      const doc_specialties = await Specialties.findAll({
+        where: {
+          speciality: {
+            [Op.or]: specialties,
+          },
+        },
+      });
+
+      await doctor.setSpecialties(doc_specialties);
     }
 
-    setDoctorAvailibity(availability);
+    setDoctorAvailibity(availability, doc_id, res);
 
     return res.status(201).json({
       message: "Doctor registration successful!",
