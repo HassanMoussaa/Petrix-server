@@ -17,4 +17,6 @@ router.post("/appointment", PetOwnerController.bookAppointment);
 
 router.get("/availableSlots", PetOwnerController.getAvailableSlots);
 
+router.post("/update_profile", PetOwnerController.updatPetOwnerProfile);
+
 module.exports = router;

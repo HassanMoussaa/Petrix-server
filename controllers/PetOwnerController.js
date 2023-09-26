@@ -324,10 +324,54 @@ async function addReview(req, res) {
   }
 }
 
+async function updatPetOwnerProfile(req, res) {
+  const doc_id = req.userData.user_id;
+
+  const v = new Validator();
+  const schema = {
+    profile: { type: "string", optional: true },
+    phone: { type: "string", optional: true },
+    city: { type: "string", optional: true },
+    country: { type: "string", optional: true },
+  };
+  console.log("Request Body:", req.body);
+  const validation_response = v.validate(req.body, schema);
+
+  if (validation_response !== true) {
+    return res.status(400).json({
+      message: "Validation Failed!",
+      errors: validation_response,
+    });
+  }
+
+  const { profile, phone, city, country } = req.body;
+
+  try {
+    const doctor = await User.findOne({ where: { id: doc_id } });
+    doctor.profile = profile;
+    doctor.phone = phone;
+    doctor.city = city;
+    doctor.country = country;
+
+    doctor.save();
+
+    return res.status(201).json({
+      message: "Doctor registration successful!",
+      user: doctor,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   register,
   getmyProfile,
   bookAppointment,
   getAvailableSlots,
   addReview,
+  updatPetOwnerProfile,
 };
