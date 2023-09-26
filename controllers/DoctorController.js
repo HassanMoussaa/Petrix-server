@@ -32,7 +32,7 @@ async function register(req, res) {
     specialties: {
       type: "array",
       items: {
-        type: "number",
+        type: "string",
         positive: true,
         integer: true,
       },
@@ -96,7 +96,14 @@ async function register(req, res) {
     });
 
     if (specialties) {
-      await doctor.setSpecialties(specialties);
+      const doc_specialties = await Specialties.findAll({
+        where: {
+          speciality: {
+            [Op.or]: specialties,
+          },
+        },
+      });
+      await doctor.setSpecialties(doc_specialties);
     }
 
     return res.status(201).json({
