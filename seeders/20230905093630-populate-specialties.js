@@ -16,11 +16,11 @@ module.exports = {
     ];
 
     // Insert the specialties into the table
-    await queryInterface.bulkInsert("Specialties", specialtiesData, {});
+    await queryInterface.bulkInsert("specialties", specialtiesData, {});
   },
 
   down: async (queryInterface, Sequelize) => {
     // Remove the inserted data if needed
-    await queryInterface.bulkDelete("Specialties", null, {});
+    await queryInterface.bulkDelete("specialties", null, {});
   },
 };

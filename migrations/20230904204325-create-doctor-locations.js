@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('DoctorLocations', {
+    await queryInterface.createTable("doctorLocations", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,18 +13,18 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users', 
-          key: 'id',
+          model: "Users",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       latitude: {
-        type: Sequelize.DECIMAL(10, 8), 
+        type: Sequelize.DECIMAL(10, 8),
         allowNull: false,
       },
       longitude: {
-        type: Sequelize.DECIMAL(11, 8), 
+        type: Sequelize.DECIMAL(11, 8),
         allowNull: false,
       },
       createdAt: {
@@ -39,6 +39,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('DoctorLocations');
+    await queryInterface.dropTable("doctorLocations");
   },
 };

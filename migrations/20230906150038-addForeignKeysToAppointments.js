@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.addColumn("Appointments", "petId", {
+      queryInterface.addColumn("appointments", "petId", {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -12,7 +12,7 @@ module.exports = {
         },
       }),
 
-      queryInterface.addColumn("Appointments", "doctorId", {
+      queryInterface.addColumn("appointments", "doctorId", {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -21,7 +21,7 @@ module.exports = {
         },
       }),
 
-      queryInterface.addColumn("Appointments", "petOwnerId", {
+      queryInterface.addColumn("appointments", "petOwnerId", {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -34,9 +34,9 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.removeColumn("Appointments", "petId"),
-      queryInterface.removeColumn("Appointments", "doctorId"),
-      queryInterface.removeColumn("Appointments", "petOwnerId"),
+      queryInterface.removeColumn("appointments", "petId"),
+      queryInterface.removeColumn("appointments", "doctorId"),
+      queryInterface.removeColumn("appointments", "petOwnerId"),
     ]);
   },
 };

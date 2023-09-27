@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface
-      .addColumn("Likes", "userId", {
+      .addColumn("likes", "userId", {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -14,7 +14,7 @@ module.exports = {
         onDelete: "CASCADE",
       })
       .then(() => {
-        return queryInterface.addColumn("Likes", "postId", {
+        return queryInterface.addColumn("likes", "postId", {
           type: Sequelize.INTEGER,
           allowNull: false,
           references: {
@@ -28,8 +28,8 @@ module.exports = {
   },
 
   down: (queryInterface) => {
-    return queryInterface.removeColumn("Likes", "userId").then(() => {
-      return queryInterface.removeColumn("Likes", "postId");
+    return queryInterface.removeColumn("likes", "userId").then(() => {
+      return queryInterface.removeColumn("likes", "postId");
     });
   },
 };
