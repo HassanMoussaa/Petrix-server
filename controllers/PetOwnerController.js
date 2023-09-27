@@ -20,7 +20,6 @@ async function register(req, res) {
     phone: { type: "string", optional: true },
     photoUrl: { type: "string", optional: true },
   };
-  console.log("Request Body:", req.body);
   const validation_response = v.validate(req.body, schema);
 
   const profile_picture =
@@ -334,7 +333,6 @@ async function updatPetOwnerProfile(req, res) {
     city: { type: "string", optional: true },
     country: { type: "string", optional: true },
   };
-  console.log("Request Body:", req.body);
   const validation_response = v.validate(req.body, schema);
 
   if (validation_response !== true) {

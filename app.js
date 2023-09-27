@@ -27,13 +27,3 @@ app.use("/chat", chatRoutes);
 app.listen(8000, () => {
   console.log("Listening on Port 8000:");
 });
-
-// db.sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log("Connected to the database.");
-
-//   })
-//   .catch((err) => {
-//     console.error("Unable to connect to the database:", err);
-//   });

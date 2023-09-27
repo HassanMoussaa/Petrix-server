@@ -42,7 +42,6 @@ async function register(req, res) {
     },
     // clinicLocations: { type: 'array',items:"string", optional: true }, // Array of clinic locations
   };
-  console.log("Request Body:", req.body);
   const validation_response = v.validate(req.body, schema);
 
   if (validation_response !== true) {
@@ -261,7 +260,6 @@ async function createDoctorPost(req, res) {
     title: { type: "string", optional: false, min: 2 },
     body: { type: "string", optional: false, min: 5 },
   };
-  console.log("Request Body:", req.body);
   const validation_response = v.validate(req.body, schema);
 
   if (validation_response !== true) {
@@ -297,7 +295,6 @@ async function editDoctorPost(req, res) {
     title: { type: "string", optional: false, min: 2 },
     body: { type: "string", optional: false, min: 5 },
   };
-  console.log("Request Body:", req.body);
   const validation_response = v.validate(req.body, schema);
 
   if (validation_response !== true) {
@@ -568,7 +565,6 @@ async function updateDoctorProfile(req, res) {
     },
     // clinicLocations: { type: 'array',items:"string", optional: true }, // Array of clinic locations
   };
-  console.log("Request Body:", req.body);
   const validation_response = v.validate(req.body, schema);
 
   if (validation_response !== true) {

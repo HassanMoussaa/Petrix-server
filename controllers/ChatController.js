@@ -11,7 +11,6 @@ async function getChatGPT(req, res) {
       model: "gpt-3.5-turbo",
     });
     const text = response?.choices[0]?.message?.content;
-    console.log("TEXT:: ", text);
     return res.json({ message: text });
   } catch (error) {
     console.error(error);

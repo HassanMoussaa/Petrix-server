@@ -139,7 +139,6 @@ async function unfollowUser(req, res) {
 async function getDoctorProfile(req, res) {
   const { id } = req.params;
   const user_id = req.userData.user_id;
-  console.log("TEST:: ", user_id);
   try {
     const response = await User.findOne({
       attributes: [
@@ -217,7 +216,6 @@ async function getDoctorProfile(req, res) {
       is_followed = true;
     }
     response.dataValues.check_if_followed = is_followed;
-    console.log("hi", response.dataValues.posts);
 
     response.dataValues.posts.forEach((post) => {
       post.dataValues.is_liked = false;

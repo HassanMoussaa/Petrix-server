@@ -24,7 +24,6 @@ async function sendNotification(req, res, next) {
   if (notification_type == "new_booking_notification") {
     title = "New Appointment Request!";
     body = `${pet_owner_name} requested an appointment on ${app_date} at ${app_time}!`;
-    console.log("hi");
     query_tokens = await FirebaseToken.findAll({
       attributes: ["token"],
       where: { user_id: doc_id },
@@ -32,7 +31,6 @@ async function sendNotification(req, res, next) {
   } else if (notification_type == "accepted_appointment_notification") {
     title = "Appointment Accepted!";
     body = `You appointment with Dr. ${doctor_name} on  ${app_date} at ${app_time} has been accepted!`;
-    console.log("bye");
     query_tokens = await FirebaseToken.findAll({
       attributes: ["token"],
       where: { user_id: petOwner_id },
@@ -40,7 +38,6 @@ async function sendNotification(req, res, next) {
   } else if (notification_type == "rejected_appointment_notification") {
     title = "Appointment Rejected!";
     body = `You appointment with Dr. ${doctor_name} on  ${app_date} at ${app_time} has been rejected!`;
-    console.log("bye");
     query_tokens = await FirebaseToken.findAll({
       attributes: ["token"],
       where: { user_id: petOwner_id },
