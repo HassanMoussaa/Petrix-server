@@ -2,10 +2,10 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.renameTable("FirebaseTokens", "firebase_tokens");
+    await queryInterface.renameTable("firebaseTokens", "firebase_tokens");
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.renameTable("firebase_tokens", "FirebaseTokens");
+    await queryInterface.renameTable("firebase_tokens", "firebaseTokens");
   },
 };

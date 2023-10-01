@@ -32,7 +32,7 @@ module.exports = {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: {
-        model: "Users", // The name of the referenced model
+        model: "users", // The name of the referenced model
         key: "id", // The name of the referenced column
       },
       onUpdate: "CASCADE", // Update the Availability's UserId if the referenced User's id changes
