@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       this.belongsToMany(models.Specialties, {
-        through: "User_Specialties",
+        through: "user_specialties",
         as: "specialties",
       });
 
