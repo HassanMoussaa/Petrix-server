@@ -4,15 +4,15 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Define the list of specialties to insert
     const specialtiesData = [
-      { speciality: "Cat" },
-      { speciality: "Dog" },
-      { speciality: "Bird" },
-      { speciality: "Reptile" },
-      { speciality: "Rabbit" },
-      { speciality: "Rodent" },
-      { speciality: "Fish" },
-      { speciality: "Amphibian" },
-      { speciality: "Exotic" },
+      { speciality: "Cat", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Dog", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Bird", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Reptile", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Rabbit", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Rodent", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Fish", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Amphibian", createdAt: new Date(), updatedAt: new Date() },
+      { speciality: "Exotic", createdAt: new Date(), updatedAt: new Date() },
     ];
 
     // Insert the specialties into the table
