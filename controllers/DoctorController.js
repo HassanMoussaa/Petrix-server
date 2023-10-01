@@ -65,7 +65,7 @@ async function register(req, res) {
   } = req.body;
 
   const profile_picture =
-    "http://127.0.0.1:8000/images/profile_pictures/default_profile_picture.jpg";
+    "http://127.0.0.1:8000/images/default_profile_picture.jpg";
 
   try {
     const isEmailUsed = await User.findOne({ where: { email: email } });

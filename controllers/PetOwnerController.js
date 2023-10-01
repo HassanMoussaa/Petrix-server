@@ -23,7 +23,7 @@ async function register(req, res) {
   const validation_response = v.validate(req.body, schema);
 
   const profile_picture =
-    "http://127.0.0.1:8000/images/profile_pictures/default_profile_picture.jpg";
+    "http://127.0.0.1:8000/images/default_profile_picture.jpg";
 
   if (validation_response !== true) {
     return res.status(400).json({
